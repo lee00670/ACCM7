@@ -6,13 +6,13 @@ import re
 app = Flask(__name__)
 
 # Change this to your secret key (can be anything, it's for extra protection)
-app.secret_key = 'your secret key'
+app.secret_key = 'my secret key'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = ''
+app.config['MYSQL_PASSWORD'] = 'test'
+app.config['MYSQL_DB'] = 'pythonlogin'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -29,7 +29,7 @@ def login():
         password = request.form['password']
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE id = %s AND pw = %s', (username, password))
+        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password))
         # Fetch one record and return result
         account = cursor.fetchone()
         # If account exists in accounts table in out database
