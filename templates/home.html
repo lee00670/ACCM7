@@ -12,13 +12,15 @@
   <section class="jumbotron text-center">
     <div class="container">
       <br>
-      <h1>Algonquin College Course Mapping System</h1>
+      <h1 class="display-3">Algonquin College <br>Course Mapping System</h1>
         <br>
-      <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+      <p class="lead text-muted">Welcome to Algonquin College Course Mapping System!
+          This grading system will serve as a focal point for obtaining information on student statuses in any given program, such as their grades and how far along they are in their respective programs.
+          </p>
       <p>
           <br>
-        <a href="#" class="btn btn-primary my-2">View Grade Book</a>
-        <a href="#" class="btn btn-secondary my-2">Upload Grade</a>
+        <a href="{{ url_for('viewGrade') }}" class="btn btn-success my-2">View Grade Book</a>
+        <a href="{{ url_for('uploadGrade') }}" class="btn btn-success my-2" {{ bUpload }}>Upload Grade </a>
       </p>
     </div>
   </section>

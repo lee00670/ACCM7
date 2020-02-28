@@ -1,0 +1,247 @@
+
+{% extends "bootstrap/base.html" %}
+{% include 'layout.html' %}
+
+{% block head %}
+    <script  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="  crossorigin="anonymous"></script>
+    {{ super() }}
+
+    <script type=text/javascript>
+    $( document ).ready(function() {
+        //cascading dropdwon for program and course
+        $(".selectFilter").on("change",function(){
+            var e=$(this).data("target"),i=$(this).find(":selected").data("ref");
+            $("select."+e).val(""),null==i?
+                $("select."+e).find("option").each(function(){
+                    console.log("inside undefined"),$(this).removeAttr("disabled hidden")}):
+                $("select."+e).find("option").each(function(){
+                    var e=$(this).data("belong"),t=$(this).val();
+                    {#console.log($(this).val());#}
+                    {#($(this).val() == "allcourse")?($(this).prop("disabled",false),$(this).prop("hidden",false)):(null);#}
+                    i!=e&&null!=t?($(this).prop("disabled",!0),$(this).prop("hidden",!0)):($(this).prop("disabled",!1),$(this).prop("hidden",!1))})
+        });
+
+    });
+    </script>
+    <style>
+        .input-icons i {
+            position: absolute;
+        }
+
+        .input-icons {
+            width: 100%;
+        }
+
+        .icon {
+            padding: 12px;
+            color: lightgoldenrodyellow;
+        }
+
+        .input-field {
+            width: 100%;
+            text-align: center;
+        }
+        .vertical-text {
+            transform:rotate(-90deg);
+            {#border: 1px dotted gray;#}
+            {#position: relative;#}
+            {##}
+            {#text-align: left;#}
+            margin:30px auto;
+            font-size: 0.8rem;
+        }
+
+        thead th {
+            {#vertical-align: bottom !important;#}
+            {#padding: 1px !important;#}
+            height: 90px;
+        }
+        [data-title] {
+          {#outline: red dotted 1px; /*optional styling*/#}
+          {#font-size: 30px; /*optional styling*/#}
+          {##}
+          position: relative;
+          {#cursor: help;#}
+        }
+
+        [data-title]:hover::before {
+          content: attr(data-title);
+          position: absolute;
+          bottom: -26px;
+          left: 20px;
+          display: inline-block;
+          padding: 3px 6px;
+          border-radius: 3px;
+          background: #111;
+          color: #fff;
+          font-size: 11px;
+          font-family: sans-serif;
+          white-space: nowrap;
+        }
+        [data-title]:hover::after {
+          content: '';
+          position: absolute;
+          bottom: -5px;
+          left: 25px;
+          display: inline-block;
+          color: #fff;
+          border: 4px solid transparent;
+          border-bottom: 4px solid #111;
+        }
+
+       .comment:after {
+            content: "";
+            position: absolute;
+            left: calc(100% - 0.5em);
+            top: 0;
+            border-left: 0.5em solid transparent;
+            border-top: 0.5em solid red;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container" >
+
+      <div class="w-100 py-5 text-center">
+        <h2 >Students' Grade Book</h2>
+          <hr class="mb-4">
+
+        <form id="viewForm" action="{{ url_for('viewGrade') }}" method="post" class="needs-validation" >
+        <div class="form-row">
+        <div class="input-group">
+                <div class="col-md-2 mb-3">
+                    <select data-target="programList"  class="custom-select d-block w-100 versionList selectFilter" id="version" name="version" required="">
+                        <option value="">Choose Version...</option>
+
+                    {% for version in vDict %}
+                        {% if version['program_version'] == values['version'] %}
+                            <option data-ref="{{ version['program_version'] }}" value="{{ version['program_version'] }}" selected>{{ version['program_version'] }}</option>
+                        {% else %}
+                            <option data-ref="{{ version['program_version'] }}" value="{{ version['program_version'] }}">{{ version['program_version'] }}</option>
+                        {% endif %}
+                    {% endfor %}
+
+                    </select>
+                    <div class="invalid-feedback">
+                      Please select a valid program version.
+                    </div>
+                </div>
+              <div class="col-md-3 mb-3">
+                <select data-target="courseList"  class="custom-select d-block w-100 programList selectFilter" id="program" name="program" required="">
+                    <option value="">Choose Program...</option>
+
+                {% for program in pDict %}
+                    {% if program['pid']|string == values['program'] %}
+                        <option data-belong="{{ program['program_version'] }}"  data-ref="{{ program['pid'] }}" value="{{ program['pid'] }}" selected>{{ program['name'] }}</option>
+                    {% else %}
+                        <option data-belong="{{ program['program_version'] }}"  data-ref="{{ program['pid'] }}" value="{{ program['pid'] }}">{{ program['name'] }}</option>
+                    {% endif %}
+                {% endfor %}
+
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid program name.
+                </div>
+              </div>
+              <div class="col-md-2 mb-3">
+                <select class="custom-select d-block w-100" id="level" name="level" required="">
+                    <option value="">Choose Level...</option>
+                    {% set level = ['1','2','3','4'] %}
+                    {% for l in level %}
+                        {% if l == values['level'] %}
+                            <option selected>{{ l }}</option>
+                        {% else %}
+                            <option>{{ l }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                  Please provide a valid course level.
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <select class="custom-select d-block w-100 courseList selectFilter" id="course" name="course">
+                    <option value="">Choose Course...</option>
+                     {% for course in cDict %}
+                         {% if course['cid']|string == values['course'] %}
+                            <option data-belong="{{ course['pid'] }}" value="{{ course['cid'] }}" selected>{{ course['title'] }}</option>
+                         {% else %}
+                            <option data-belong="{{ course['pid'] }}" value="{{ course['cid'] }}">{{ course['title'] }}</option>
+                         {% endif %}
+
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                  Please provide a valid course.
+                </div>
+              </div>
+            <div class="col-md-2 mb-3">
+                 <div class="input-icons">
+                <i class="fa fa-search icon">
+              </i>
+                <input type="submit" class="btn btn-success input-field" value=" View Grade" id="viewGrade">
+            </div>
+
+
+            </div>
+            </div>
+            </div>
+
+
+
+        </form>
+
+      {% if rDict %}
+          <table class="table table-sm table-bordered table-striped">
+          <thead >
+            <tr>
+              <th scope="col">Student #</th>
+              <th scope="col">Student Name</th>
+              <th scope="col">Level</th>
+                {% for c in clist %}
+                <th class="  h-100 " scope="col" data-toggle="tooltip" data-placement="right" data-title='{{c['title'] }}'><p class="vertical-text align-bottom ">{{ c['course_num'] }}</p></th>
+                {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rDict %}
+                <tr>
+                <th scope="row">{{ r['student_num'] }}</th>
+                <td>{{ r['fullname'] }}</td>
+                <td>{{ r['level'] }}</td>
+
+                 {% for c in clist %}
+        {#             {% if r[c['course_num']][1] %}#}
+        {#                 <td data-title="{{ r[c['course_num']][1] }}">HI {{r[c['course_num']][0]}}</td>#}
+        {#             {% else %}#}
+        {#                 <td >{{ r[c['course_num']][0] }}</td>#}
+        {#             {% endif %}#}
+                     {% if r[c['course_num']+"_c"] %}
+                         <td class="comment" data-title="{{ r[c['course_num']+"_c"] }}"> {{ r[c['course_num']] }}</td>
+                     {% else %}
+                         <td >{{ r[c['course_num']] }}</td>
+                     {% endif %}
+
+                 {% endfor %}
+                </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      {% endif %}
+
+      </div>
+    </div>
+
+
+<footer class="container ">
+  <p class="float-right">© Algonquin College 2019-2020</p>
+</footer>
+
+
+{% endblock %}
+
+
