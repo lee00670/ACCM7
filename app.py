@@ -227,6 +227,7 @@ def viewGrade():
 
             query = "UPDATE grade SET "+setQuery+" WHERE gid='"+ request.form['gid']+"'"
             cursor.execute(query)
+            mysql.connection.commit()
 
         if 'course' in request.form and request.form['course']:
             query = "select c.course_num, c.title, c.year from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
