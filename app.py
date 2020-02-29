@@ -4,7 +4,10 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 from flask_bootstrap import Bootstrap
+from wtforms.validators import DataRequired, Length
+
 import inputCSV
+from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -17,7 +20,6 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'jelee'
 app.config['MYSQL_DB'] = 'accm'
-
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -205,6 +207,7 @@ def uploadGrade2DB():
 @app.route('/viewGrade', methods=['GET','POST'])
 def viewGrade():
     print("call viewGrade")
+
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
     cursor.execute('select distinct program_version  from program;')
@@ -215,10 +218,20 @@ def viewGrade():
     courseDict = cursor.fetchall()
 
     if request.method == 'POST' and 'program' in request.form and 'level' in request.form and 'version' in request.form:
+        if 'gid' in request.form and request.form['gid']:
+            print(request.form['m_grade'])
+            print(request.form['gid'])
+            setQuery =''
+            if 'm_grade' in request.form and request.form['gid']:
+                setQuery = "letter_grade = '" + request.form['m_grade']+"', fcomment = '" + request.form['m_fcomment']+"', rcomment = '" + request.form['m_rcomment']+"'"
+
+            query = "UPDATE grade SET "+setQuery+" WHERE gid='"+ request.form['gid']+"'"
+            cursor.execute(query)
+
         if 'course' in request.form and request.form['course']:
-            query = "select c.course_num, c.title from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
+            query = "select c.course_num, c.title, c.year from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
         else:
-            query = "select c.course_num, c.title from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
+            query = "select c.course_num, c.title, c.year from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
 
         cursor.execute(query)
         clist = cursor.fetchall()
@@ -241,21 +254,28 @@ def viewGrade():
                 d['level'] = r['level']
 
             d[r['course_num']] = (r['letter_grade'])
+            d[r['course_num']+ "_id"] = (r['gid'])
 
             comment = ''
             if (r['fcomment']):
                 comment = "fcomment: " + r['fcomment']
 
             if (r['rcomment']):
-                comment += "rcomment: " + r['rcomment']
+                comment += " rcomment: " + r['rcomment']
 
             if (comment):
                 d[r['course_num'] + "_c"] = comment
-        rDict += (d,)
+        if (d):
+            rDict += (d,)
 
-        return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
-                               values=request.form, rDict=rDict, clist=clist)
-
+        if(len(rDict)):
+            return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
+                                   values=request.form, rDict=rDict, clist=clist)
+        else:
+            return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
+                                   values=request.form, noData=True)
 
 
     return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict, values=request.form)
+
+

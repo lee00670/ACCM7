@@ -4,6 +4,7 @@
 
 {% block head %}
     <script  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="  crossorigin="anonymous"></script>
+     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
     {{ super() }}
 
     <script type=text/javascript>
@@ -13,7 +14,8 @@
             var e=$(this).data("target"),i=$(this).find(":selected").data("ref");
             $("select."+e).val(""),null==i?
                 $("select."+e).find("option").each(function(){
-                    console.log("inside undefined"),$(this).removeAttr("disabled hidden")}):
+                    {#console.log("inside undefined"),$(this).removeAttr("disabled hidden")}):#}
+                    $(this).removeAttr("disabled hidden")}):
                 $("select."+e).find("option").each(function(){
                     var e=$(this).data("belong"),t=$(this).val();
                     {#console.log($(this).val());#}
@@ -21,9 +23,110 @@
                     i!=e&&null!=t?($(this).prop("disabled",!0),$(this).prop("hidden",!0)):($(this).prop("disabled",!1),$(this).prop("hidden",!1))})
         });
 
+        $('#editGradeModal').on('show.bs.modal', function (event) {
+
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('Edit grade for ' + recipient.split("$$")[2]+"("+recipient.split("$$")[1]+")")
+            modal.find('#m_grade').val(recipient.split("$$")[3])
+            comment = recipient.split("$$")[4];
+            if(comment.indexOf("fcomment:")!= -1)
+            {
+                if(comment.indexOf("rcomment:")!= -1)
+                {
+                    fcomment = comment.substring(10, comment.indexOf("rcomment:"))
+                    rcomment = comment.substring(comment.indexOf("rcomment:")+10, )
+                }
+                else
+                {
+                    fcomment = comment.substring(10,)
+                    rcomment=""
+                }
+            }
+            else
+            {
+                fcomment = ""
+                if(comment.indexOf("rcomment:")!= -1)
+                {
+                    rcomment = comment.substring(comment.indexOf("rcomment:")+10, )
+                }
+                else
+                {
+                    rcomment=""
+                }
+            }
+
+            modal.find('#m_fcomment').val(fcomment)
+            modal.find('#m_rcomment').val(rcomment)
+            console.log("recipient", recipient)
+            console.log("modea: "+$("select#program").val());
+            console.log("modea: "+$("select#version").val());
+            console.log("modea: "+$("select#level").val());
+            console.log("modea: "+$("select#course").val());
+            modal.find('.modal-body input#gid').val(recipient.split("$$")[0])
+            modal.find('.modal-body input#program').val($("select#program").val())
+            modal.find('.modal-body input#version').val($("select#version").val())
+            modal.find('.modal-body input#level').val($("select#level").val())
+            modal.find('.modal-body input#course').val($("select#course").val())
+
+        });
     });
+    function validateForm() {
+        console.log("validateForm");
+        var valid = true;
+      var grade = document.forms["editForm"]["m_grade"].value;
+      if (grade == "") {
+        $("p#gradeError").text("This field must be filled out.");
+        valid = false;
+
+      }
+      else if(grade.length > 2)
+      {
+          $("p#gradeError").text("The length  is too long.");
+         valid = false;
+      }
+      else
+      {
+          $("p#gradeError").text("")
+      }
+      var fcomment = document.forms["editForm"]["m_fcomment"].value;
+      if(fcomment.length >300)
+      {
+           $("p#fcommentError").text("The length  is too long.");
+         valid = false;
+      }
+      else
+      {
+          $("p#fcommentError").text("")
+      }
+      var rcomment = document.forms["editForm"]["m_rcomment"].value;
+      if(rcomment.length >300)
+      {
+           $("p#rcommentError").text("The length  is too long.");
+          valid = false;
+      }
+      else
+      {
+          $("p#rcommentError").text("")
+      }
+
+      return valid;
+
+}
     </script>
     <style>
+        p.error{
+            font-size: 0.7rem;
+            color: red;
+            padding-left: 5px;
+        }
+        .cyear{
+            margin: 0px;
+            font-size:0.6rem;
+        }
         .input-icons i {
             position: absolute;
         }
@@ -182,29 +285,34 @@
                  <div class="input-icons">
                 <i class="fa fa-search icon">
               </i>
-                <input type="submit" class="btn btn-success input-field" value=" View Grade" id="viewGrade">
+                <input type="submit" class="btn btn-success input-field" value="View Grade" id="viewGrade">
             </div>
 
 
             </div>
             </div>
             </div>
-
-
-
         </form>
+
+
 
       {% if rDict %}
           <table class="table table-sm table-bordered table-striped">
           <thead >
             <tr>
-              <th scope="col">Student #</th>
-              <th scope="col">Student Name</th>
-              <th scope="col">Level</th>
+              <th scope="col" rowspan="2">Student #</th>
+              <th scope="col" rowspan="2">Name</th>
+              <th scope="col" rowspan="2">Level</th>
                 {% for c in clist %}
-                <th class="  h-100 " scope="col" data-toggle="tooltip" data-placement="right" data-title='{{c['title'] }}'><p class="vertical-text align-bottom ">{{ c['course_num'] }}</p></th>
+                <th class="h-100" scope="col" data-toggle="tooltip" data-placement="right" data-title='{{c['title'] }}'><p class="vertical-text align-bottom ">{{ c['course_num'] }}</p></th>
                 {% endfor %}
             </tr>
+          <tr>
+              {% for c in clist %}
+{#                <td class="h-100 align-bottom" scope="col"><p class="small cyear">{{ c['year'] }}</p></td>#}
+                  <td class="h-100 align-bottom" scope="col"><span class="badge badge-light badge-pill small border border-secondary">{{ c['year'] }}</span></td>
+              {% endfor %}
+          </tr>
           </thead>
           <tbody>
             {% for r in rDict %}
@@ -214,15 +322,22 @@
                 <td>{{ r['level'] }}</td>
 
                  {% for c in clist %}
-        {#             {% if r[c['course_num']][1] %}#}
-        {#                 <td data-title="{{ r[c['course_num']][1] }}">HI {{r[c['course_num']][0]}}</td>#}
-        {#             {% else %}#}
-        {#                 <td >{{ r[c['course_num']][0] }}</td>#}
-        {#             {% endif %}#}
+
+
                      {% if r[c['course_num']+"_c"] %}
-                         <td class="comment" data-title="{{ r[c['course_num']+"_c"] }}"> {{ r[c['course_num']] }}</td>
+                         <td class="comment" data-title="{{ r[c['course_num']+"_c"] }}">
+                             <button type="button" id="{{ r[c['course_num']+"_id"] }}" class="btn btn-light btn-sm" aria-disabled="false" data-toggle="modal" data-target="#editGradeModal" data-whatever="{{ r[c['course_num']+"_id"] }}$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}"+>
+                                {{ r[c['course_num']] }}
+                             </button></td>
                      {% else %}
-                         <td >{{ r[c['course_num']] }}</td>
+                        {% if r[c['course_num']] %}
+                            <td ><span class="align-bottom small">
+                                <button type="button" id="{{ r[c['course_num']+"_id"] }}" class="btn btn-light btn-sm" aria-disabled="false" data-toggle="modal" data-target="#editGradeModal" data-whatever="{{ r[c['course_num']+"_id"] }}$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}">
+                                    {{ r[c['course_num']] }}
+                                </button></span></td>
+                        {% else %}
+                            <td ></td>
+                        {% endif %}
                      {% endif %}
 
                  {% endfor %}
@@ -233,8 +348,74 @@
         </table>
       {% endif %}
 
+      {% if noData %}
+          <p>There is no grade data.</p>
+      {% endif %}
+
       </div>
     </div>
+
+
+<div class="modal fade" id="editGradeModal" tabindex="-1" role="dialog" aria-labelledby="editGradeLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editGradeLabel">Edit grade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" action="{{ url_for('viewGrade') }}" method="post" class="needs-validation" onsubmit="return validateForm()">
+
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label" >Grade</label>
+            <input type="text" class="form-control" id="m_grade" name="m_grade" data-maxlength="2" data-error="maxlength" frequired>
+              <p class="error" id="gradeError"></p>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Faculty Comment</label>
+            <textarea class="form-control" id="m_fcomment" name="m_fcomment"></textarea>
+              <p class="error" id="fcommentError"></p>
+          </div>
+
+          <div class="form-group">
+           <label for="message-text" class="col-form-label">Review Comment</label>
+           <textarea class="form-control" id="m_rcomment" name="m_rcomment"></textarea>
+              <p class="error" id="rcommentError"></p>
+          </div>
+
+          <div class="form-group">
+            <input type="text" class="form-control" name="gid" id="gid" value="" hidden></input>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="version" id="version" value="" hidden></input>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="program" id="program" value="" hidden></input>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="level" id="level" value="" hidden></input>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="course" id="course" value="" hidden></input>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary col-3" data-dismiss="modal">Cancel</button>
+            <input type="submit" class="btn btn-success input-field col-3" value="Save">
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
 
 
 <footer class="container ">
