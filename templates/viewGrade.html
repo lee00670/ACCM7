@@ -139,6 +139,10 @@
 }
     </script>
     <style>
+        div.modal
+        {
+            z-index: 100000 !important;
+        }
         .emptygrade
         {
             width:20px;
@@ -152,6 +156,7 @@
         }
         .badge-flowchart:hover {
             color: #fff;
+            {##FAFAD2#}
             border: 1px solid #25993F;
             background-color: #28A745;
         }
@@ -201,6 +206,7 @@
           {#font-size: 30px; /*optional styling*/#}
           {##}
           position: relative;
+
           {#cursor: help;#}
         }
 
@@ -217,6 +223,7 @@
           font-size: 11px;
           font-family: sans-serif;
           white-space: nowrap;
+          z-index:10000;
         }
         [data-title]:hover::after {
           content: '';
@@ -227,6 +234,7 @@
           color: #fff;
           border: 4px solid transparent;
           border-bottom: 4px solid #111;
+          z-index:10000;
         }
 
        .comment:after {
@@ -365,19 +373,19 @@
                      {% if r[c['course_num']+"_c"] %}
                          <td class="comment" data-title="{{ r[c['course_num']+"_c"] }}">
 {#                         <td class="comment" title="{{ c['course_num'] }}">#}
-                             <button type="button" id="{{ r[c['course_num']+"_id"] }}" class="btn btn-light btn-sm" aria-disabled="false" data-toggle="modal" data-target="#editGradeModal" data-whatever="{{ r[c['course_num']+"_id"] }}$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}$${{ c['mapid'] }}$${{ r['sid'] }}$${{ c['course_num'] }}"+>
+                             <button type="button" id="{{ r[c['course_num']+"_id"] }}" class="btn btn-light btn-sm"  {{ edit }} data-toggle="modal" data-target="#editGradeModal" data-whatever="{{ r[c['course_num']+"_id"] }}$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}$${{ c['mapid'] }}$${{ r['sid'] }}$${{ c['course_num'] }}"+>
                                 {{ r[c['course_num']] }}
                              </button></td>
                      {% else %}
                         {% if r[c['course_num']] %}
                             <td title="{{ c['course_num'] }}"><span class="align-bottom small">
-                                <button type="button" id="{{ r[c['course_num']+"_id"] }}" class="btn btn-light btn-sm" aria-disabled="false" data-toggle="modal" data-target="#editGradeModal" data-whatever="{{ r[c['course_num']+"_id"] }}$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}$${{ c['mapid'] }}$${{ r['sid'] }}$${{ c['course_num'] }}">
+                                <button type="button" id="{{ r[c['course_num']+"_id"] }}" class="btn btn-light btn-sm" {{ edit }}  data-toggle="modal" data-target="#editGradeModal" data-whatever="{{ r[c['course_num']+"_id"] }}$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}$${{ c['mapid'] }}$${{ r['sid'] }}$${{ c['course_num'] }}">
                                     {{ r[c['course_num']] }}
                                 </button></span></td>
                         {% else %}
                             <td title="{{ c['course_num'] }}">
                                 <span class="align-bottom small">
-                                <button type="button" class="btn btn-light btn-lg emptygrade" aria-disabled="false" data-toggle="modal" data-target="#editGradeModal" data-whatever="$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}$${{ c['mapid'] }}$${{ r['sid'] }}$${{ c['course_num'] }}">
+                                <button type="button" class="btn btn-light btn-lg emptygrade"  data-toggle="modal" {{ edit }} data-target="#editGradeModal" data-whatever="$${{ r['student_num'] }}$${{ r['fullname'] }}$${{ r[c['course_num']] }}$${{ r[c['course_num']+"_c"] }}$${{ c['mapid'] }}$${{ r['sid'] }}$${{ c['course_num'] }}">
                                     {{ r[c['course_num']] }}
                                 </button>
                                 </span></td>

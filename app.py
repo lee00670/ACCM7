@@ -48,7 +48,7 @@ def login():
         elif (category=='student'):
             cursor.execute('SELECT * FROM student WHERE id = %s AND pw = %s', (username, password))
 
-        bUpload ={0: 'hidden', 1: ''} [(category == 'coordinator')|(category == 'professor')]
+        bUpload ={0: 'hidden', 1: ''} [(category == 'coordinator')|(category == 'secretary')]
 
         # Fetch one record and return result
         account = cursor.fetchone()
@@ -279,9 +279,15 @@ def viewGrade():
         if (d):
             rDict += (d,)
 
+
+        if (session['category'] != 'coordinator' and session['category'] != 'secretary' ):
+            edit='disabled'
+        else:
+            edit = ''
+
         if(len(rDict)):
             return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
-                                   values=request.form, rDict=rDict, clist=clist)
+                                   values=request.form, rDict=rDict, clist=clist, edit=edit)
         else:
             return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
                                    values=request.form, noData=True)
