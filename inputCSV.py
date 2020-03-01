@@ -1,8 +1,8 @@
 import csv
 import mysql.connector
 
-def inputCSV2DB(pVersion, cTerm, sLevel):
-   print("call uploadGrade2DB in inputCSV", pVersion, cTerm, sLevel)
+def inputCSV2DB(pVersion, sLevel):
+   print("call uploadGrade2DB in inputCSV", pVersion, sLevel)
    mydb = mysql.connector.connect(host='localhost', user='root', password='jelee', database='accm')
    print("database connected")
 
@@ -12,7 +12,7 @@ def inputCSV2DB(pVersion, cTerm, sLevel):
       print(row)
       insertQuery = "INSERT INTO ac_grade_input(program_version, course_year, student_level, "+\
                     "term, program_code, program_name, course_level, student_num, student_fname, student_lname, student_email, prof_fname, prof_lname, course_num, course_title, "+\
-                    "letter_grade, percent, fcomment, rcomment) VALUES('"+pVersion+"', '"+ cTerm+"', '"+sLevel+"',"
+                    "letter_grade, percent, fcomment, rcomment) VALUES('"+pVersion+"', '', '"+sLevel+"',"
       cursor.execute(insertQuery+"%s, %s, %s, %s, %s, %s, %s, '', %s, %s, %s, %s, %s, %s, %s, %s)", row)
 
    print("insert program")

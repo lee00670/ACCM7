@@ -189,10 +189,9 @@ def uploadGrade():
 def uploadGrade2DB():
     print("call uploadGrade2DB")
 
-    if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form and 'sLevel' in request.form:
-        print('call inputCSV2DB', request.form['pVersion'], request.form['cTerm'], request.form['sLevel'])
+    if request.method == 'POST' and 'pVersion' in request.form and 'sLevel' in request.form:
         print("call inputCSV2DB")
-        inputCSV.inputCSV2DB(request.form['pVersion'], request.form['cTerm'], request.form['sLevel'])
+        inputCSV.inputCSV2DB(request.form['pVersion'], request.form['sLevel'])
         print("end inputCSV2DB")
     if 'loggedin' in session:
         # User is loggedin show them the home page
@@ -228,16 +227,26 @@ def viewGrade():
             query = "UPDATE grade SET "+setQuery+" WHERE gid='"+ request.form['gid']+"'"
             cursor.execute(query)
             mysql.connection.commit()
+        elif 'gid' in request.form and request.form['m_grade']:
+            valuesQuery= "values('" + request.form['sid']+"', '" + request.form['mapid']+"', '" + request.form['m_grade']+"', '" + request.form['m_fcomment']+"', '" + request.form['m_rcomment']+"')"
+            query = "INSERT INTO grade(sid, mapid, letter_grade, fcomment, rcomment) " + valuesQuery
+            cursor.execute(query)
+            mysql.connection.commit()
+
+        if 'delete_gid' in request.form and request.form['delete_gid']:
+            query = "delete from grade where gid ='"+request.form['delete_gid']+"'"
+            cursor.execute(query)
+            mysql.connection.commit()
 
         if 'course' in request.form and request.form['course']:
-            query = "select c.course_num, c.title, c.year from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
+            query = "select c.course_num, c.title, coursemap.term, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by course_num"
         else:
-            query = "select c.course_num, c.title, c.year from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' group by c.course_num order by count(c.course_num) desc, course_num"
+            query = "select c.course_num, c.title, coursemap.term, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' group by c.course_num order by course_num"
 
         cursor.execute(query)
         clist = cursor.fetchall()
 
-        query ="select p.name, p.program_version, gid, student_num, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' order by s.student_num, title"
+        query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' order by s.student_num, title"
         cursor.execute(query)
         result = cursor.fetchall()
         s = ''
@@ -251,6 +260,7 @@ def viewGrade():
                 d = {}
                 s = r['student_num']
                 d['student_num'] = s
+                d['sid'] = r['sid']
                 d['fullname'] = r['fullname']
                 d['level'] = r['level']
 
@@ -279,4 +289,8 @@ def viewGrade():
 
     return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict, values=request.form)
 
-
+# http://localhost:5000/viewFlowchart
+@app.route('/viewFlowchart', methods=['GET','POST'])
+def viewFlowchart():
+    print("call viewFlowchart")
+    return render_template('viewFlowchart.html', values=request.form)
