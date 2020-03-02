@@ -1,9 +1,12 @@
+import os
+
 from dominate.svg import switch
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 from flask_bootstrap import Bootstrap
+from werkzeug.utils import secure_filename
 from wtforms.validators import DataRequired, Length
 
 import inputCSV
@@ -11,6 +14,9 @@ from wtforms import Form, TextField, TextAreaField, validators, StringField, Sub
 
 app = Flask(__name__)
 Bootstrap(app)
+
+UPLOAD_FOLDER = 'd:/1.MyDoc/2020W/CST8268_Project/project/ACCM7/Upload/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
@@ -189,14 +195,20 @@ def uploadGrade():
 def uploadGrade2DB():
     print("call uploadGrade2DB")
 
-    if request.method == 'POST' and 'pVersion' in request.form and 'sLevel' in request.form:
+    # if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form and 'sLevel' in request.form:
+    if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form:
         print("call inputCSV2DB")
-        inputCSV.inputCSV2DB(request.form['pVersion'], request.form['sLevel'])
+        # if 'file' not in request.files:
+        #     flash('No file part')
+        #     return redirect(request.url)
+        file = request.files['inputFile']
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        inputCSV.inputCSV2DB(request.form['pVersion'], request.form['cTerm'], "", file.filename)
         print("end inputCSV2DB")
     if 'loggedin' in session:
         # User is loggedin show them the home page
         print("call uploadGrade below")
-        return render_template('uploadGrade.html', show=1, fileName=request.form['inputFile'])
+        return render_template('uploadGrade.html', show=1, fileName=file.filename)
 
         # User is not loggedin redirect to login page
     return redirect(url_for('login'))
@@ -213,7 +225,9 @@ def viewGrade():
     versionDict = cursor.fetchall()
     cursor.execute('SELECT program_version, pid, name FROM program ')
     programDict = cursor.fetchall()
-    cursor.execute('select pid, coursemap.cid, title from coursemap inner join course using(cid) order by title;')
+    cursor.execute('select distinct level, pid from coursemap order by level')
+    lvlDict = cursor.fetchall()
+    cursor.execute('select pid, coursemap.cid, title, level from coursemap inner join course using(cid) order by title;')
     courseDict = cursor.fetchall()
 
     if request.method == 'POST' and 'program' in request.form and 'level' in request.form and 'version' in request.form:
@@ -239,14 +253,14 @@ def viewGrade():
             mysql.connection.commit()
 
         if 'course' in request.form and request.form['course']:
-            query = "select c.course_num, c.title, coursemap.term, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by course_num"
+            query = "select c.course_num, c.title, coursemap.level, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by course_num"
         else:
-            query = "select c.course_num, c.title, coursemap.term, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' group by c.course_num order by course_num"
+            query = "select c.course_num, c.title, coursemap.level, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' group by c.course_num order by course_num"
 
         cursor.execute(query)
         clist = cursor.fetchall()
 
-        query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and s.level='"+request.form['level'] +"' order by s.student_num, title"
+        query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' order by s.student_num, title"
         cursor.execute(query)
         result = cursor.fetchall()
         s = ''
@@ -286,17 +300,36 @@ def viewGrade():
             edit = ''
 
         if(len(rDict)):
-            return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
+            return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict,
                                    values=request.form, rDict=rDict, clist=clist, edit=edit)
         else:
-            return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict,
+            return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict,
                                    values=request.form, noData=True)
 
 
-    return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, cDict=courseDict, values=request.form)
+    return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict, values=request.form)
 
 # http://localhost:5000/viewFlowchart
-@app.route('/viewFlowchart', methods=['GET','POST'])
-def viewFlowchart():
-    print("call viewFlowchart")
+@app.route('/viewFlowchart/<string:sid>', methods=['GET','POST'])
+def viewFlowchart(sid):
+    print("call viewFlowchart", sid)
+    # select *
+    # from prerequisite inner
+    # join
+    # coursemap
+    # using(mapid)
+    # where
+    # pid = 20;
+    # select
+    # pid
+    # from enrollment where
+    # sid = 666;
+    # select *
+    # from grade inner
+    # join
+    # coursemap
+    # using(mapid)
+    # where
+    # sid = 666;
+
     return render_template('viewFlowchart.html', values=request.form)

@@ -70,7 +70,7 @@
         professor first and last name, course number, course title, letter grade, percent, faculty and review comments. </p>
           <hr class="mb-4">
 
-            <form id="uploadForm" action="{{ url_for('uploadGrade2DB') }}" method="post" class="needs-validation" >
+        <form id="uploadForm" action="{{ url_for('uploadGrade2DB') }}" method="post" class="needs-validation"  enctype="multipart/form-data">
         <div class="form-row">
               <div class="col-md-6 mb-3">
                 <label for="pVersion">Program Version</label>
@@ -83,31 +83,35 @@
                   Please select a valid program version.
                 </div>
               </div>
-{#              <div class="col-md-4 mb-3">#}
-{#                <label for="cTerm">Course Term</label>#}
-{#                <select class="custom-select d-block w-100" id="cTerm" name="cTerm" required="">#}
-{#                    <option value="">Choose...</option>#}
-{#                    <option>2019W</option>#}
-{#                    <option>2019F</option>#}
-{#                    <option>2020W</option>#}
-{#                </select>#}
-{#                <div class="invalid-feedback">#}
-{#                  Please provide a valid course term.#}
-{#                </div>#}
-{#              </div>#}
               <div class="col-md-6 mb-3">
-                <label for="sLevel">Student Level</label>
-                <select class="custom-select d-block w-100" id="sLevel" name="sLevel" required="">
+                <label for="cTerm">Course Term</label>
+                <select class="custom-select d-block w-100" id="cTerm" name="cTerm" required="">
                     <option value="">Choose...</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
+                    <option>2017W</option>
+                    <option>2017F</option>
+                    <option>2018W</option>
+                    <option>2018F</option>
+                    <option>2019W</option>
+                    <option>2019F</option>
+                    <option>2020W</option>
                 </select>
                 <div class="invalid-feedback">
                   Please provide a valid course term.
                 </div>
               </div>
+{#              <div class="col-md-4 mb-3">#}
+{#                <label for="sLevel">Student Level</label>#}
+{#                <select class="custom-select d-block w-100" id="sLevel" name="sLevel" required="">#}
+{#                    <option value="">Choose...</option>#}
+{#                    <option>1</option>#}
+{#                    <option>2</option>#}
+{#                    <option>3</option>#}
+{#                    <option>4</option>#}
+{#                </select>#}
+{#                <div class="invalid-feedback">#}
+{#                  Please provide a valid course term.#}
+{#                </div>#}
+{#              </div>#}
             </div>
 
 

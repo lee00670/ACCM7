@@ -1,18 +1,18 @@
 import csv
 import mysql.connector
 
-def inputCSV2DB(pVersion, sLevel):
-   print("call uploadGrade2DB in inputCSV", pVersion, sLevel)
+def inputCSV2DB(pVersion, cTerm, sLevel, fileName):
+   print("call uploadGrade2DB in inputCSV", pVersion, cTerm, sLevel, fileName)
    mydb = mysql.connector.connect(host='localhost', user='root', password='jelee', database='accm')
    print("database connected")
 
    cursor = mydb.cursor()
-   csv_data = csv.reader(open('./static/input.csv', encoding='UTF-8-sig'))
+   csv_data = csv.reader(open('./Upload/'+fileName, encoding='UTF-8-sig'))
    for row in csv_data:
       print(row)
       insertQuery = "INSERT INTO ac_grade_input(program_version, course_year, student_level, "+\
                     "term, program_code, program_name, course_level, student_num, student_fname, student_lname, student_email, prof_fname, prof_lname, course_num, course_title, "+\
-                    "letter_grade, percent, fcomment, rcomment) VALUES('"+pVersion+"', '', '"+sLevel+"',"
+                    "letter_grade, percent, fcomment, rcomment) VALUES('"+pVersion+"', '"+cTerm+"', '"+sLevel+"',"
       cursor.execute(insertQuery+"%s, %s, %s, %s, %s, %s, %s, '', %s, %s, %s, %s, %s, %s, %s, %s)", row)
 
    print("insert program")
@@ -90,7 +90,7 @@ def inputCSV2DB(pVersion, sLevel):
                   'select student.sid, coursemap.mapid, a.letter_grade, a.percent, a.fcomment, a.rcomment '+
                   'from ac_grade_input as a '+
                   'inner join student '+
-                  'on(student.student_num = a.student_num and student.level = a.student_level) '+
+                  'on(student.student_num = a.student_num) '+
                   'inner join program '+
                   'on(program.code = a.program_code and program.program_version = a.program_version) '+
                   'inner join course '+
@@ -100,6 +100,46 @@ def inputCSV2DB(pVersion, sLevel):
                   'where not exists(select * from grade '+
                   'where sid = student.sid and mapid = coursemap.mapid) '+
                   'group by student.sid, coursemap.mapid;')
+
+
+   print("insert prerequisite")
+
+   #for each course, insert the prerequisite for 3002X program.
+   #rule: parent, prerequisite
+   prerequisiteRule=[('CST8250', ['CST8260']),
+                     ('CST8253', ['CST8209', 'CST8279']),
+                     ('CST8256', ['CST8253', 'CST8260']),
+                     ('CST8257', ['CST8260', 'CST8209']),
+                     ('CST8258', ['CST8253']),
+                     ('ENL8720', ['ENL1813T']),
+                     ('CST8259', ['CST8257']),
+                     ('CST8265', ['CST8257']),
+                     ('CST8267', ['CST8257']),
+                     ('CST8268', ['CST8258'])
+                     ]
+   for rule in prerequisiteRule:
+      parent = rule[0]
+      prerequisite = rule[1]
+
+      for preCourse in prerequisite:
+        print(parent, preCourse)
+        query = 'select mapid, course_num from coursemap inner join program using(pid) inner join course using(cid) where program_version="'+pVersion+'" and code="3002X" and course_num="'+parent+'"'
+        cursor.execute(query)
+        parentCourseMapIDs = cursor.fetchall()
+        cursor.execute(
+        'select mapid, course_num from coursemap inner join program using(pid) inner join course using(cid) where program_version="'+pVersion+'" and code="3002X" and course_num="'+preCourse+'"')
+        prerequisiteMapIDs = cursor.fetchall()
+        print(parentCourseMapIDs, prerequisiteMapIDs)
+
+        for c in parentCourseMapIDs:
+          for p in prerequisiteMapIDs:
+              print("pre: ", c[0], p[0])
+              cursor.execute('select count(*) from prerequisite where mapid =' + str(c[0]) + ' and prerequisite=' + str(p[0]) + ' ')
+              count = cursor.fetchone()
+              if not(count[0]):
+                query = 'insert into prerequisite(mapid, prerequisite) values (' + str(c[0]) + ', ' + str(p[0]) + ')'
+                cursor.execute(query)
+
 
    print("insertion done.")
 
