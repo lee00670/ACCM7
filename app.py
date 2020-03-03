@@ -52,7 +52,7 @@ def login():
         elif (category=='secretary'):
             cursor.execute('SELECT * FROM secretary WHERE id = %s AND pw = %s', (username, password))
         elif (category=='student'):
-            cursor.execute('SELECT * FROM student WHERE id = %s AND pw = %s', (username, password))
+            cursor.execute('SELECT student_num as id, pw FROM student WHERE student_num = %s AND pw = %s', (username, password))
 
         bUpload ={0: 'hidden', 1: ''} [(category == 'coordinator')|(category == 'secretary')]
 
@@ -147,7 +147,7 @@ def home():
     return redirect(url_for('login'))
 
 # http://localhost:5000/profile - this will be the profile page, only accessible for loggedin users
-@app.route('/profile')
+@app.route('/profile', methods=['POST','GET'])
 def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
@@ -155,17 +155,51 @@ def profile():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         category = session['category']
         if (category == 'professor'):
-            cursor.execute('SELECT * FROM professor WHERE id = %s AND pw = %s', ([session['id']], [session['pw']]))
+            cursor.execute('select distinct id, fname, lname, email, pw, name from professor inner join teach using(profid) inner join coursemap using(mapid) inner join program using(pid) where id=%s and pw=%s', ([session['id']], [session['pw']]))
         elif (category == 'coordinator'):
-            cursor.execute('SELECT * FROM coordinator WHERE id = %s AND pw = %s', ([session['id']], [session['pw']]))
+            cursor.execute('SELECT * FROM coordinator inner join program using(pid) WHERE id = %s AND pw = %s', ([session['id']], [session['pw']]))
         elif (category == 'secretary'):
-            cursor.execute('SELECT * FROM secretary WHERE id = %s AND pw = %s',([session['id']], [session['pw']]))
+            cursor.execute('select id, fname, lname, pw, email, name from secretary inner join program_secretary using (secid) inner join program using(pid) where id=%s and pw=%s',([session['id']], [session['pw']]))
         elif (category == 'student'):
-            cursor.execute('SELECT * FROM student WHERE stduent_num = %s AND pw = %s', ([session['id']], [session['pw']]))
+            cursor.execute('select student_num as id, fname, lname, pw, email, name from student inner join enrollment using (sid) inner join  program using (pid) where student_num=%s and pw=%s', ([session['id']], [session['pw']]))
 
         account = cursor.fetchone()
+
+        if request.method == 'POST' and 'password' in request.form:
+            print(request.form['password'])
+            if(session['pw'] == request.form['password']):
+                return render_template('profile.html', account=account, category=session['category'], msg="s")
+            else:
+                return render_template('profile.html', account=account, category=session['category'], msg="The password is wrong.")
         # Show the profile page with account info
-        return render_template('profile.html', account=account)
+        elif request.method == 'POST' and 'newPassword' in request.form and 'newPassword2' in request.form:
+            if(request.form['newPassword'] == request.form['newPassword2']):
+                try:
+                    category = session['category']
+                    if (category == 'professor'):
+                        cursor.execute('update professor set pw = %s WHERE id = %s',
+                                       (request.form['newPassword'], [session['id']]))
+                    elif (category == 'coordinator'):
+                        cursor.execute(' update coordinator set pw = %s where id= %s',
+                                       (request.form['newPassword'], [session['id']]))
+                    elif (category == 'secretary'):
+                        cursor.execute('update secretary set pw = %s WHERE id = %s',
+                                       (request.form['newPassword'], [session['id']]))
+                    elif (category == 'student'):
+                        cursor.execute('update student set pw = %s WHERE student_num = %s',
+                                       (request.form['newPassword'], [session['id']]))
+                    mysql.connection.commit()
+                    session['pw'] = request.form['newPassword']
+                    return render_template('profile.html', account=account, category=session['category'], msg="New password is updated.")
+                except (MySQLdb.Error, MySQLdb.Warning) as e:
+                    print(e)
+                    return render_template('profile.html', account=account, category=session['category'], msg="New password is not changed.")
+            else:
+                return render_template('profile.html', account=account, category=session['category'],
+                                       msg="New password is not changed.")
+
+
+        return render_template('profile.html', account=account, category=session['category'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
@@ -217,7 +251,9 @@ def uploadGrade2DB():
 # http://localhost:5000/viewGrade
 @app.route('/viewGrade', methods=['GET','POST'])
 def viewGrade():
-    print("call viewGrade")
+    print("call viewGrade", session['category'])
+
+
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])

@@ -8,7 +8,15 @@
 
     <script type=text/javascript>
     $( document ).ready(function() {
+        $(".hBack").on("click", function(e){
+            e.preventDefault();
+            window.history.back();
+        });
     });
+    function goBack() {
+        e.preventDefault();
+      history.back()
+    }
 
     </script>
     <style>
@@ -19,8 +27,11 @@
 
 {% block content %}
  <div class="container" >
-     </div>
 
+<form>
+    <button class="btn btn-secondary hBack" type="button"><i class="fas fa-chevron-left"></i></button>
+</form>
+     </div>
 
 
 
