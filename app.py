@@ -71,7 +71,7 @@ def login():
 
         else:
             # Account doesnt exist or username/password incorrect
-            msg = 'Incorrect username/password!'
+            msg = 'Incorrect username/password'
     # Show the login form with message (if any)
     return render_template('index.html', msg=msg)
 
