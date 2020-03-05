@@ -1,16 +1,13 @@
 import os
-
-from dominate.svg import switch
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
 import re
+
+import MySQLdb.cursors
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from werkzeug.utils import secure_filename
-from wtforms.validators import DataRequired, Length
+from flask_mysqldb import MySQL
+from flask_mail import Mail, Message
 
 import inputCSV
-from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -24,8 +21,17 @@ app.secret_key = 'your secret key'
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'jelee'
 app.config['MYSQL_DB'] = 'accm'
+app.config.from_pyfile('./static/config.cfg')
+
+# app.config['MAIL_SERVER'] = "localhost"
+# app.config['MAIL_PORT'] = 8025
+# python -m smtpd -n -c DebuggingServer localhost:8025 ==> for emulated email server
+
+app.config['MAIL_SERVER'] = "smtp.googlemail.com"
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = 1
+
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -96,7 +102,7 @@ def register():
     # Output message if something goes wrong...
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'category' in request.form:
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
@@ -105,16 +111,19 @@ def register():
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         if (category == 'professor'):
-            cursor.execute('SELECT * FROM professor WHERE id = %s AND pw = %s', (username, password))
+            cursor.execute('SELECT * FROM professor WHERE id = "'+username+'"')
         elif (category == 'coordinator'):
-            cursor.execute('SELECT * FROM coordinator WHERE id = %s AND pw = %s', (username, password))
+            cursor.execute('SELECT * FROM coordinator WHERE id = "'+username+'"')
         elif (category == 'secretary'):
-            cursor.execute('SELECT * FROM secretary WHERE id = %s AND pw = %s', (username, password))
+            cursor.execute('SELECT * FROM secretary WHERE id = "'+username+'"')
         elif (category == 'student'):
-            cursor.execute('SELECT * FROM student WHERE stduent_num = %s AND pw = %s', (username, password))
+            cursor.execute('SELECT * FROM student WHERE id = "'+username+'"')
 
         account = cursor.fetchone()
         # If account exists show error and validation checks
+        # print(len(account))
+
+
         if account:
             msg = 'Account already exists!'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -124,11 +133,16 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
-            # Account doesnt exists and the form data is valid, now insert new account into accounts table
 
-            cursor.execute('INSERT INTO user VALUES (%s, %s, %s)', (username, password, email))
-            mysql.connection.commit()
-            msg = 'You have successfully registered!'
+            mail = Mail(app)
+            msg = Message('New request for the registration of ACCM', sender="jelee1003@gmail.com", recipients=['jelee1003@gmail.com'])
+            # msg = Message('test subject', sender='algonquinlive.com\lee00670', recipients=['jelee1003@gmail.com'])
+            msg.html="<h3>The new resistration is requested as below.</h3>username: "+username+"<br>password: "+password+"<br>email: "+email+"<br>Category: "+category
+            mail.send(msg)
+
+            msg = ''
+            success = "s"
+            return render_template('register.html', msg=msg, success=success)
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'

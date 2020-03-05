@@ -140,14 +140,26 @@ def inputCSV2DB(pVersion, cTerm, sLevel, fileName):
                 query = 'insert into prerequisite(mapid, prerequisite) values (' + str(c[0]) + ', ' + str(p[0]) + ')'
                 cursor.execute(query)
 
+   print("flowchart")
+   courseSequence = [('CST8260', 1), ('CST8209', 2), ('CST8279', 3), ('MAD9013', 4),('MAT8001C', 5), ('CST8300', 6), ('CST8250', 7), ('CST8253', 8), ('CST8254', 9), ('MAD9010', 10),
+                     ('ENL1813T', 11),('GED3002', 12),('CST8256', 13),('CST8257', 14),('CST8258', 15),('ENL8720', 16),('GED3002', 17),('CST8259', 18),('CST8265', 19),('CST8325', 20),
+                     ('CST8268', 21)]
+   for seq in courseSequence:
+       cnum = seq[0]
+       seq = seq[1]
+       query = "select mapid from coursemap inner join course using(cid) inner join program using(pid) where course_num = '"+cnum+"' and program_version = '"+pVersion +"' and code = '3002X'"
+       cursor.execute(query)
+       mapIDs = cursor.fetchall()
+       for mapID in mapIDs:
+           id = mapID[0]
+           query = 'insert into flowchart(mapid, sequence) values (' + str(id) + ', ' + str(seq) + ')'
+           cursor.execute(query)
 
    print("insertion done.")
 
    print("delete ac_grade_input")
    #insert grade
    cursor.execute('delete from ac_grade_input')
-
-
 
    mydb.commit()
    cursor.close()

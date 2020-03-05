@@ -34,14 +34,29 @@
             modal.find('.modal-title').text(recipient)
 
         });
+        $('#updatedModal').on('show.bs.modal', function (event) {
+
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+
+            modal.find('.modal-title').text(recipient)
+
+        });
 
         if($("#result").text() == "s")
         {
             $( "#btnSuccess" ).trigger( "click" );
         }
-        else if(($("#result").text() == "The password is wrong.") | ($("#result").text() == "New password is not changed.")| ($("#result").text() == "New password is updated."))
+        else if(($("#result").text() == "The password is wrong.") | ($("#result").text() == "New password is not changed."))
         {
             $( "#btnFail" ).trigger( "click" );
+        }
+        else if(($("#result").text() == "New password is updated."))
+        {
+            $( "#btnUpdated" ).trigger( "click" );
         }
 
     });
@@ -140,6 +155,7 @@
                 </div>
                 <button class="btn btn-success" type="button" id="btnSuccess" data-toggle="modal" data-target="#changepw" data-whatever="@mdo" hidden></button>
                 <button class="btn btn-success" type="button" id="btnFail" data-toggle="modal" data-target="#failModal" data-whatever="{{msg}}" hidden></button>
+                <button class="btn btn-success" type="button" id="btnUpdated" data-toggle="modal" data-target="#updatedModal" data-whatever="{{msg}}" hidden></button>
                 <span id="result" value="" hidden>{{msg}}</span>
             </div>
 
@@ -223,23 +239,42 @@
 </div>
 
       <div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="failModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="failModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Please try again.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="failModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Please try again.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+
+      <div class="modal fade" id="updatedModal" tabindex="-1" role="dialog" aria-labelledby="failModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="failModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Your new password is set successfully.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
 </main>
