@@ -141,6 +141,7 @@ def inputCSV2DB(pVersion, cTerm, sLevel, fileName):
                 cursor.execute(query)
 
    print("flowchart")
+   cursor.execute("delete from flowchart")
    courseSequence = [('CST8260', 1), ('CST8209', 2), ('CST8279', 3), ('MAD9013', 4),('MAT8001C', 5), ('CST8300', 6), ('CST8250', 7), ('CST8253', 8), ('CST8254', 9), ('MAD9010', 10),
                      ('ENL1813T', 11),('GED3002', 12),('CST8256', 13),('CST8257', 14),('CST8258', 15),('ENL8720', 16),('GED3002', 17),('CST8259', 18),('CST8265', 19),('CST8325', 20),
                      ('CST8268', 21)]
