@@ -1,10 +1,20 @@
 {% extends "bootstrap/base.html" %}
 
 {% block head %}
+    <script  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="  crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     {{ super() }}
     <script>
+    $( document ).ready(function() {
+        if($("#result").text() == "s")
+        {
+            $( "#btnSuccess" ).trigger( "click" );
+        }
+
+
+    });
     function validateForm() {
         console.log("validateForm");
         var valid = true;
@@ -39,7 +49,7 @@
         padding: 30px;
     }
     p.error{
-        font-size: 0.7rem;
+        font-size: 0.9rem;
         color: red;
         padding-left: 5px;
         text-align: left;
@@ -66,7 +76,7 @@
          <main role="main" >
 
             <div class="signup-form col-5 " style="margin:  auto;">
-    <form action="{{ url_for('login') }}" method="post" id="registerForm" onsubmit="return validateForm()">
+    <form action="{{ url_for('register') }}" method="post" id="registerForm" onsubmit="return validateForm()">
 		<h2>Create Account</h2><br>
 {#		<p class="lead">It's free and hardly takes more than 30 seconds.</p>#}
         <div class="form-group">
@@ -133,16 +143,36 @@
                 </div>
             </div>
           </div>
+        <p class="error" id="resultMsg">{{ msg }}</p>
 
 		<div class="form-group">
             <button type="submit" class="btn btn-success btn-block btn-lg">Sign Up</button>
+            <span id="result" value="" hidden>{{success}}</span>
+            <button class="btn btn-success" type="button" id="btnSuccess" data-toggle="modal" data-target="#showResult" data-whatever="@mdo" hidden></button>
         </div>
 		<p class="small text-center">By clicking the Sign Up button, your request will be sent to the administrator.</p>
     </form>
 	<div class="text-center">Already have an account? <a href="{{ url_for('login') }}" class="active">Login here</a>.</div>
 </div>
 
-
+<div class="modal fade" id="showResult" tabindex="-1" role="dialog" aria-labelledby="failModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="failModalLabel">Congratulations!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Your registration will be processed and you will get the confrimation email in 3 days.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 </main>
 <footer class="container ">
   <br><p class="float-right">© Algonquin College 2019-2020</p>
