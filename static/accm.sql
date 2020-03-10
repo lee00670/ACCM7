@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 10, 2020 at 05:57 PM
+-- Generation Time: Mar 10, 2020 at 09:38 PM
 -- Server version: 5.7.19
 -- PHP Version: 7.1.9
 
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `ac_grade_input` (
   `fcomment` varchar(300) NOT NULL,
   `rcomment` varchar(300) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -290,6 +290,7 @@ INSERT INTO `flowchart` (`mapid`, `sequence`) VALUES
 (460, 16),
 (443, 18),
 (444, 19),
+(445, 20),
 (446, 21);
 
 -- --------------------------------------------------------
@@ -310,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `grade` (
   PRIMARY KEY (`gid`),
   KEY `sid` (`sid`),
   KEY `mapid` (`mapid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6571 DEFAULT CHARSET=utf8 COMMENT='Grade table';
+) ENGINE=InnoDB AUTO_INCREMENT=6572 DEFAULT CHARSET=utf8 COMMENT='Grade table';
 
 --
 -- Dumping data for table `grade`
@@ -1062,7 +1063,8 @@ INSERT INTO `grade` (`gid`, `sid`, `mapid`, `letter_grade`, `percent`, `fcomment
 (6567, 696, 502, 'A-', '', '', ''),
 (6568, 696, 503, 'A+', '94', '', ''),
 (6569, 696, 504, 'A-', '', '', ''),
-(6570, 696, 505, 'A-', '', '', '');
+(6570, 696, 505, 'A-', '', '', ''),
+(6571, 670, 451, 'T', NULL, '', 'test');
 
 -- --------------------------------------------------------
 
