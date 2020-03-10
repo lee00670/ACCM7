@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
+from passlib.hash import sha256_crypt
 
 import inputCSV
 
@@ -28,10 +29,10 @@ app.config.from_pyfile('./static/config.cfg')
 # app.config['MAIL_PORT'] = 8025
 # python -m smtpd -n -c DebuggingServer localhost:8025 ==> for emulated email server
 
+#mgail setting
 app.config['MAIL_SERVER'] = "smtp.googlemail.com"
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = 1
-
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -45,39 +46,67 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         # Create variables for easy access
         username = request.form['username']
-        password = request.form['password']
+        passwordUser = request.form['password']
         category = request.form['category']
 
         msg=category
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if(category=='professor'):
-            cursor.execute('SELECT * FROM professor WHERE id = %s AND pw = %s', (username, password))
-        elif (category=='coordinator'):
-            cursor.execute('SELECT * FROM coordinator WHERE id = %s AND pw = %s', (username, password))
-        elif (category=='secretary'):
-            cursor.execute('SELECT * FROM secretary WHERE id = %s AND pw = %s', (username, password))
-        elif (category=='student'):
-            cursor.execute('SELECT student_num as id, pw FROM student WHERE student_num = %s AND pw = %s', (username, password))
+        # if(category=='professor'):
+        #     cursor.execute('SELECT * FROM professor WHERE id = %s AND pw = %s', (username, password))
+        # elif (category=='coordinator'):
+        #     cursor.execute('SELECT * FROM coordinator WHERE id = %s AND pw = %s', (username, password))
+        # elif (category=='secretary'):
+        #     cursor.execute('SELECT * FROM secretary WHERE id = %s AND pw = %s', (username, password))
+        # elif (category=='student'):
+        #     cursor.execute('SELECT student_num as id, pw FROM student WHERE student_num = %s AND pw = %s', (username, password))
+        result = 0
+        if (category == 'professor'):
+            result = cursor.execute('SELECT * FROM professor WHERE id = %s',[username])
+        elif (category == 'coordinator'):
+            result = cursor.execute('SELECT * FROM coordinator WHERE id = %s',[username])
+        elif (category == 'secretary'):
+            result = cursor.execute('SELECT * FROM secretary WHERE id = %s', [username])
+        elif (category == 'student'):
+            result = cursor.execute('SELECT student_num as id, pw FROM student WHERE student_num = %s', [username])
 
         bUpload ={0: 'hidden', 1: ''} [(category == 'coordinator')|(category == 'secretary')]
 
-        # Fetch one record and return result
-        account = cursor.fetchone()
-        # If account exists in accounts table in out database
-        if account:
-            # Create session data, we can access this data in other routes
-            session['loggedin'] = True
-            session['id'] = account['id']
-            session['pw'] = account['pw']
-            session['category'] = category
-            session['bUpload'] = bUpload
-            # Redirect to home page
-            return render_template('home.html', bUpload=bUpload)
+        if result > 0:
+            # Fetch one record and return result
+            account = cursor.fetchone()
+            password = account['pw']
 
-        else:
-            # Account doesnt exist or username/password incorrect
-            msg = 'Incorrect username/password'
+            if sha256_crypt.verify(passwordUser, password):
+                # Create session data, we can access this data in other routes
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['pw'] = account['pw']
+                session['category'] = category
+                session['bUpload'] = bUpload
+                # Redirect to home page
+                return render_template('home.html', bUpload=bUpload)
+            else:
+                # Account doesnt exist or username/password incorrect
+                msg = 'Incorrect username/password'
+
+
+        # # Fetch one record and return result
+        # account = cursor.fetchone()
+        # # If account exists in accounts table in out database
+        # if account:
+        #     # Create session data, we can access this data in other routes
+        #     session['loggedin'] = True
+        #     session['id'] = account['id']
+        #     session['pw'] = account['pw']
+        #     session['category'] = category
+        #     session['bUpload'] = bUpload
+        #     # Redirect to home page
+        #     return render_template('home.html', bUpload=bUpload)
+        #
+        # else:
+        #     # Account doesnt exist or username/password incorrect
+        #     msg = 'Incorrect username/password'
     # Show the login form with message (if any)
     return render_template('index.html', msg=msg)
 
@@ -86,7 +115,6 @@ def login():
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out
-
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('pw', None)
@@ -106,6 +134,8 @@ def register():
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
+        password = sha256_crypt.hash(password)
+
         email = request.form['email']
         category = request.form['category']
         # Check if account exists using MySQL
@@ -117,13 +147,10 @@ def register():
         elif (category == 'secretary'):
             cursor.execute('SELECT * FROM secretary WHERE id = "'+username+'"')
         elif (category == 'student'):
-            cursor.execute('SELECT * FROM student WHERE id = "'+username+'"')
+            cursor.execute('SELECT * FROM student WHERE student_num = "'+username+'"')
 
         account = cursor.fetchone()
         # If account exists show error and validation checks
-        # print(len(account))
-
-
         if account:
             msg = 'Account already exists!'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -134,11 +161,11 @@ def register():
             msg = 'Please fill out the form!'
         else:
 
-            mail = Mail(app)
-            msg = Message('New request for the registration of ACCM', sender="jelee1003@gmail.com", recipients=['jelee1003@gmail.com'])
-            # msg = Message('test subject', sender='algonquinlive.com\lee00670', recipients=['jelee1003@gmail.com'])
-            msg.html="<h3>The new resistration is requested as below.</h3>username: "+username+"<br>password: "+password+"<br>email: "+email+"<br>Category: "+category
-            mail.send(msg)
+            # mail = Mail(app)
+            # msg = Message('New request for the registration of ACCM', sender="jelee1003@gmail.com", recipients=['jelee1003@gmail.com'])
+            # # msg = Message('test subject', sender='algonquinlive.com\lee00670', recipients=['jelee1003@gmail.com'])
+            # msg.html="<h3>The new resistration is requested as below.</h3>username: "+username+"<br>password: "+password+"<br>email: "+email+"<br>Category: "+category
+            # mail.send(msg)
 
             msg = ''
             success = "s"
@@ -180,30 +207,37 @@ def profile():
         account = cursor.fetchone()
 
         if request.method == 'POST' and 'password' in request.form:
-            print(request.form['password'])
-            if(session['pw'] == request.form['password']):
+
+            #if password is right, show the profile info
+            if(sha256_crypt.verify(request.form['password'], session['pw'])):
+            # if(session['pw'] == request.form['password']):
                 return render_template('profile.html', account=account, category=session['category'], msg="s")
             else:
                 return render_template('profile.html', account=account, category=session['category'], msg="The password is wrong.")
-        # Show the profile page with account info
+        # if user requests to change password
         elif request.method == 'POST' and 'newPassword' in request.form and 'newPassword2' in request.form:
             if(request.form['newPassword'] == request.form['newPassword2']):
                 try:
                     category = session['category']
+                    #make hash using new password user inputs
+                    pw = sha256_crypt.hash(request.form['newPassword'])
+
+                    #update password
                     if (category == 'professor'):
                         cursor.execute('update professor set pw = %s WHERE id = %s',
-                                       (request.form['newPassword'], [session['id']]))
+                                       (pw, [session['id']]))
                     elif (category == 'coordinator'):
                         cursor.execute(' update coordinator set pw = %s where id= %s',
-                                       (request.form['newPassword'], [session['id']]))
+                                       (pw, [session['id']]))
                     elif (category == 'secretary'):
                         cursor.execute('update secretary set pw = %s WHERE id = %s',
-                                       (request.form['newPassword'], [session['id']]))
+                                       (pw, [session['id']]))
                     elif (category == 'student'):
                         cursor.execute('update student set pw = %s WHERE student_num = %s',
-                                       (request.form['newPassword'], [session['id']]))
+                                       (pw, [session['id']]))
                     mysql.connection.commit()
-                    session['pw'] = request.form['newPassword']
+                    #save new hash to session
+                    session['pw'] = pw
                     return render_template('profile.html', account=account, category=session['category'], msg="New password is updated.")
                 except (MySQLdb.Error, MySQLdb.Warning) as e:
                     print(e)
@@ -212,25 +246,24 @@ def profile():
                 return render_template('profile.html', account=account, category=session['category'],
                                        msg="New password is not changed.")
 
-
         return render_template('profile.html', account=account, category=session['category'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
-# http://localhost:5000/input -
-@app.route('/input')
-def input():
-    # upload csv file to mysql
-    if 'loggedin' in session:
-
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
-        cursor.execute('SELECT * FROM user WHERE id = %s', [session['id']])
-        account = cursor.fetchone()
-        # Show the profile page with account info
-        return render_template('input.html')
-    # User is not loggedin redirect to login page
-    return redirect(url_for('login'))
+# # http://localhost:5000/input -
+# @app.route('/input')
+# def input():
+#     # upload csv file to mysql
+#     if 'loggedin' in session:
+#
+#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#         # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
+#         cursor.execute('SELECT * FROM user WHERE id = %s', [session['id']])
+#         account = cursor.fetchone()
+#         # Show the profile page with account info
+#         return render_template('input.html')
+#     # User is not loggedin redirect to login page
+#     return redirect(url_for('login'))
 
 # http://localhost:5000/uploadGrade
 @app.route('/uploadGrade')
@@ -246,13 +279,12 @@ def uploadGrade2DB():
     # if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form and 'sLevel' in request.form:
     if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form:
         print("call inputCSV2DB")
-        # if 'file' not in request.files:
-        #     flash('No file part')
-        #     return redirect(request.url)
         file = request.files['inputFile']
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+        #call inputCSV2DB with file name
         inputCSV.inputCSV2DB(request.form['pVersion'], request.form['cTerm'], "", file.filename)
-        print("end inputCSV2DB")
+
     if 'loggedin' in session:
         # User is loggedin show them the home page
         print("call uploadGrade below")
@@ -266,8 +298,6 @@ def uploadGrade2DB():
 @app.route('/viewGrade', methods=['GET','POST'])
 def viewGrade():
     print("call viewGrade", session['category'])
-
-
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
@@ -308,14 +338,17 @@ def viewGrade():
             query = "select c.course_num, c.title, coursemap.level, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' group by c.course_num order by course_num"
 
         cursor.execute(query)
+        #get the course list as program, version and level
         clist = cursor.fetchall()
 
+        #get all the grade for every students with program, version and level
         query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' order by s.student_num, title"
         cursor.execute(query)
         result = cursor.fetchall()
         s = ''
         rDict=()
         d={}
+        #save grade info for each student to dictionary
         for r in result:
             if (s != r['student_num']):
                 if (d):
@@ -343,12 +376,11 @@ def viewGrade():
         if (d):
             rDict += (d,)
 
-
         if (session['category'] != 'coordinator' and session['category'] != 'secretary' ):
             edit='disabled'
         else:
             edit = ''
-
+        #call viewGrade.html with result
         if(len(rDict)):
             return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict,
                                    values=request.form, rDict=rDict, clist=clist, edit=edit)
