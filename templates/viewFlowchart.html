@@ -1,6 +1,8 @@
 {% extends "bootstrap/base.html" %}
 {% include 'layout.html' %}
 {% block head %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='accm.css')}}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.css">
     <script  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="  crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
 
@@ -12,6 +14,7 @@
             e.preventDefault();
             window.history.back();
         });
+
     });
     function goBack() {
         e.preventDefault();
@@ -26,16 +29,12 @@
 {% endblock %}
 
 {% block content %}
- <div class="container" >
-
-<form>
+     <h1>Student Program Progress</h1>
+    <form>
     <button class="btn btn-secondary hBack" type="button"><i class="fas fa-chevron-left"></i></button>
 </form>
-     </div>
-
-
-
-
+ <div class="container"  id="container">
+ </div>
 
 <footer class="container ">
   <p class="float-right">© Algonquin College 2019-2020</p>
@@ -43,3 +42,21 @@
 
 
 {% endblock %}
+{% block scripts %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script type="text/javascript">
+        var flowchart_courses = {{ flowchart_courses|tojson }}
+        var prerequisite_links = {{ prerequisite_links|tojson }}
+        var student_courses = {{ student_courses|tojson }}
+        </script>
+        <script src="{{url_for('.static', filename='flowchart.js')}}"></script>
+        {{super()}}
+    {% endblock %}
+
+
+
+

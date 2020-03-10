@@ -414,4 +414,99 @@ def viewFlowchart(sid):
     # where
     # sid = 666;
 
-    return render_template('viewFlowchart.html', values=request.form)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    # get courses to show on flowchart
+    cursor.execute('select flowchart.sequence, coursemap.mapid, course.course_num, course.title ' +
+                   'from coursemap ' +
+                   'inner join flowchart using(mapid) ' +
+                   'inner join course using (cid) ' +
+                   'order by flowchart.sequence ASC;')
+    results = cursor.fetchall()
+    # dict of flowchart courses
+    rDict = []
+    # dict to compare main courses to electives
+    main_courses = []
+    for r in results:
+        rDict.append({'id': r['sequence'], 'ccode': r['course_num'], 'coursename': r['title']})
+        main_courses.append(r['course_num'])
+    # get grade for specific student
+    cursor.execute(
+        "select concat(professor.fname, ' ' , professor.lname) as 'Professor Name', course.course_num, course.title, " +
+        "term, concat(student.fname, ' ', student.lname) as 'Student Name', student.student_num, letter_grade " +
+        "from grade " +
+        "inner join coursemap using(mapid) inner join course using (cid) inner join teach using(mapid) " +
+        "inner join professor using(profid) inner join student using (sid) " +
+        "where sid="+sid +";")
+    grades = cursor.fetchall()
+    # list holding students courses and grades, etc
+    student_results = []
+    # list holding student courses by course number
+    ged_list = []
+    for g in grades:
+        ged_list.append(g['course_num'])
+        student_results.append(
+            {'student_name': g['Student Name'], 'student_num': g['student_num'], 'ccode': g['course_num'],
+             'prof': g['Professor Name'], 'term': g['term'], 'grade': g['letter_grade']})
+
+    # list of electives student took
+    diff = list(set(ged_list) - set(main_courses))
+
+    # get courses that have a prerequisite
+    pre_course = []
+    for course in rDict:
+        # pre_course.append(course['course_num'])
+        cursor.execute(
+            "SELECT flowchart.sequence, course.course_num, course.title, prerequisite.mapid, prerequisite.prerequisite " +
+            "FROM prerequisite " +
+            "INNER JOIN coursemap USING (mapid) " +
+            "INNER JOIN course USING (cid) " +
+            "INNER JOIN flowchart USING (mapid) " +
+            "WHERE course.course_num = '" + course['ccode'] + "' " +
+            "ORDER BY flowchart.sequence ASC;")
+
+        prereqs = cursor.fetchall()
+
+        # pre_course.append(prereqs)
+        for c in prereqs:
+            pre_course.append(
+                {'sequence': c['sequence'], 'ccode': c['course_num'], 'title': c['title'], 'c_mapid': c['mapid'],
+                 'c_prereq': c['prerequisite']})
+
+    # get courses that are prerequisites
+    items_c = []
+    for d in pre_course:
+        cursor.execute(
+            "SELECT flowchart.sequence, course.course_num, course.title, coursemap.mapid as 'prereq_id' " +
+            "FROM course " +
+            "INNER JOIN coursemap USING (cid) " +
+            "INNER JOIN flowchart USING (mapid) " +
+            "where coursemap.mapid = " + str(d['c_prereq']) + " " +
+            "ORDER BY flowchart.sequence ASC;")
+        pre_c = cursor.fetchall()
+        for c in pre_c:
+            items_c.append({'sequence': c['sequence'], 'ccode': c['course_num'], 'title': c['title'],
+                            'pre_id': c['prereq_id']})
+    # links between prerequisite courses: sources and targets
+    links = []
+    for i in range(len(pre_course)):
+        if pre_course[i]['c_prereq'] == items_c[i]['pre_id']:
+            links.append({'source_id': items_c[i]['sequence'], 'source': items_c[i]['ccode'],
+                          'target_id': pre_course[i]['sequence'], 'target': pre_course[i]['ccode']})
+    # remove duplicates
+    seen = set()
+    prereq_links = []
+    for duplicates in links:
+        t = tuple(duplicates.items())
+        if t not in seen:
+            seen.add(t)
+            prereq_links.append(duplicates)
+
+    # for j in range(len(rDict)):
+    #     if rDict[j]['course_num'] == prereq_links[j]['source']:
+    #         prereq_links.append({'id': rDict[j]['id']})
+    return render_template('viewFlowchart.html', flowchart_courses=rDict, prerequisite_links=prereq_links,
+                           student_courses=student_results, values=request.form)
+
+
+
+    # return render_template('viewFlowchart_old.html', values=request.form)
