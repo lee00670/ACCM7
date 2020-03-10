@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 05, 2020 at 02:40 AM
+-- Generation Time: Mar 10, 2020 at 09:38 PM
 -- Server version: 5.7.19
--- PHP Version: 5.6.31
+-- PHP Version: 7.1.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `ac_grade_input` (
   `fcomment` varchar(300) NOT NULL,
   `rcomment` varchar(300) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9955 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `coordinator` (
   `id` varchar(15) NOT NULL,
   `fname` varchar(50) NOT NULL,
   `lname` varchar(50) NOT NULL,
-  `pw` varchar(10) NOT NULL,
+  `pw` varchar(79) NOT NULL,
   `email` varchar(50) NOT NULL,
   `pid` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`corid`),
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `coordinator` (
 --
 
 INSERT INTO `coordinator` (`corid`, `id`, `fname`, `lname`, `pw`, `email`, `pid`) VALUES
-(1, 'mizonj', 'jerome', 'mizon', '12341234', 'mizonj@algonquinlive.com', 20),
-(3, 'test', 'jerome', 'mizon', 'test', 'test', 20);
+(1, 'mizonj', 'jerome', 'mizon', '$5$rounds=535000$H/6GEmqDAA74uGOP$kt18xHirp0OmkgSqbhPb9Xkobg4VCMSnhp3TdmKp9S.', 'mizonj@algonquinlive.com', 20),
+(3, 'test', 'jerome', 'mizon', '$5$rounds=535000$tIkIVvRw5GDxqyqL$WHIhBHjmwbjGRTnI/.Bio7cwJYIXZZL81kM0g/SHAA/', 'test', 20);
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `course` (
   `title` varchar(100) NOT NULL,
   `year` varchar(5) NOT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB AUTO_INCREMENT=472 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=471 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `course`
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `coursemap` (
   PRIMARY KEY (`mapid`),
   KEY `pid` (`pid`),
   KEY `cid` (`cid`)
-) ENGINE=InnoDB AUTO_INCREMENT=507 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=506 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `coursemap`
@@ -290,6 +290,7 @@ INSERT INTO `flowchart` (`mapid`, `sequence`) VALUES
 (460, 16),
 (443, 18),
 (444, 19),
+(445, 20),
 (446, 21);
 
 -- --------------------------------------------------------
@@ -310,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `grade` (
   PRIMARY KEY (`gid`),
   KEY `sid` (`sid`),
   KEY `mapid` (`mapid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6650 DEFAULT CHARSET=utf8 COMMENT='Grade table';
+) ENGINE=InnoDB AUTO_INCREMENT=6572 DEFAULT CHARSET=utf8 COMMENT='Grade table';
 
 --
 -- Dumping data for table `grade`
@@ -1062,7 +1063,8 @@ INSERT INTO `grade` (`gid`, `sid`, `mapid`, `letter_grade`, `percent`, `fcomment
 (6567, 696, 502, 'A-', '', '', ''),
 (6568, 696, 503, 'A+', '94', '', ''),
 (6569, 696, 504, 'A-', '', '', ''),
-(6570, 696, 505, 'A-', '', '', '');
+(6570, 696, 505, 'A-', '', '', ''),
+(6571, 670, 451, 'T', NULL, '', 'test');
 
 -- --------------------------------------------------------
 
@@ -1121,17 +1123,17 @@ CREATE TABLE IF NOT EXISTS `professor` (
   `fname` varchar(50) NOT NULL,
   `lname` varchar(50) NOT NULL,
   `email` varchar(50) DEFAULT NULL,
-  `pw` varchar(10) DEFAULT NULL,
+  `pw` varchar(79) DEFAULT NULL,
   PRIMARY KEY (`profid`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=533 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=527 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `professor`
 --
 
 INSERT INTO `professor` (`profid`, `id`, `fname`, `lname`, `email`, `pw`) VALUES
-(504, 'weig', 'WEI', 'GONG', NULL, 'pass1234'),
+(504, 'weig', 'WEI', 'GONG', NULL, '$5$rounds=535000$zdpP2/Wtq4avyRE0$Zgk7yYM/09w9dIP5WSw4i19GQOnCDnIEvaHqr3xdFkC'),
 (505, NULL, 'MOHAMMAD', 'PATOARY', NULL, NULL),
 (506, NULL, 'JEROME', 'MIZON', NULL, NULL),
 (507, NULL, 'JASON', 'ABBOTT', NULL, NULL),
@@ -1212,7 +1214,7 @@ CREATE TABLE IF NOT EXISTS `secretary` (
   `id` varchar(15) NOT NULL,
   `fname` varchar(50) NOT NULL,
   `lname` varchar(50) NOT NULL,
-  `pw` varchar(10) NOT NULL,
+  `pw` varchar(79) NOT NULL,
   `email` varchar(50) NOT NULL,
   PRIMARY KEY (`secid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
@@ -1222,7 +1224,7 @@ CREATE TABLE IF NOT EXISTS `secretary` (
 --
 
 INSERT INTO `secretary` (`secid`, `id`, `fname`, `lname`, `pw`, `email`) VALUES
-(1, 'jamest', 'James', 'Tyler', '12341234', 'james@email');
+(1, 'jamest', 'James', 'Tyler', '$5$rounds=535000$SVoMArZtxbYS3.JF$jnBVgGE384ARkWbCg0eEVJdpkOkDF3Ojg1fE4xc3.E8', 'james@email');
 
 -- --------------------------------------------------------
 
@@ -1236,7 +1238,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `student_num` int(9) NOT NULL,
   `fname` varchar(50) NOT NULL,
   `lname` varchar(50) NOT NULL,
-  `pw` varchar(10) DEFAULT NULL,
+  `pw` char(79) DEFAULT NULL,
   `level` varchar(1) NOT NULL,
   `email` varchar(50) NOT NULL,
   PRIMARY KEY (`sid`)
@@ -1247,9 +1249,9 @@ CREATE TABLE IF NOT EXISTS `student` (
 --
 
 INSERT INTO `student` (`sid`, `student_num`, `fname`, `lname`, `pw`, `level`, `email`) VALUES
-(666, 123456789, 'Joe         ', '', 'pass1234', '', ''),
+(666, 123456789, 'Joe         ', '', '$5$rounds=535000$m.pybG8rL8q.PzBn$2u3/FUXtc6ZAYwYjatHQFx6WzZeZ.sAPOM1gO3R/0h0', '', ''),
 (667, 408903053, 'John Patrick   ', '', NULL, '', ''),
-(668, 408903087, 'Jake       ', '', 'pass1234', '', ''),
+(668, 408903087, 'Jake       ', '', '$5$rounds=535000$HpDNiHWarN7LYCGG$H6xZEP8GFyRlUTELJfxuJgePA6AwIR0VuCF9uJtYgI3', '', ''),
 (669, 408903107, 'Paul           ', '', NULL, '', ''),
 (670, 408903122, 'Bill         ', '', NULL, '', ''),
 (671, 408903133, 'David          ', '', NULL, '', ''),
@@ -1293,7 +1295,7 @@ CREATE TABLE IF NOT EXISTS `teach` (
   PRIMARY KEY (`tid`),
   KEY `profid` (`profid`),
   KEY `mapid` (`mapid`)
-) ENGINE=InnoDB AUTO_INCREMENT=536 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=535 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `teach`
