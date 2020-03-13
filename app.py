@@ -24,7 +24,6 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_DB'] = 'accm'
 app.config.from_pyfile('./static/config.cfg')
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # app.config['MAIL_SERVER'] = "localhost"
 # app.config['MAIL_PORT'] = 8025
@@ -405,6 +404,15 @@ def viewGrade():
 @app.route('/viewFlowchart/<string:sid>', methods=['GET','POST'])
 def viewFlowchart(sid):
     print("call viewFlowchart", sid)
+    print("call viewFlowchart", session['category'])
+
+    # get coordinator and secretary session
+    if session['category'] is 'coordinator' or 'secretary':
+        admin_session = True
+    else:
+        admin_session = False
+
+
     revision = session['revision']
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -503,13 +511,14 @@ def viewFlowchart(sid):
     # get student courses
     cursor.execute(
             "select distinct flowchart.sequence, concat(professor.fname, ' ' , professor.lname) as 'Professor Name', course.course_num, course.title, " +
-            "term, concat(student.fname, ' ', student.lname) as 'Student Name', student.student_num, letter_grade, coursemap.mapid, gid " +
+            "term, concat(student.fname, ' ', student.lname) as 'Student Name', student.student_num, letter_grade, coursemap.mapid, gid, " +
+            "fcomment, rcomment " +
             "from grade " +
             "inner join coursemap using(mapid) inner join course using (cid) inner join teach using(mapid) " +
             "inner join professor using(profid) inner join student using (sid) " +
             "left join flowchart on flowchart.mapid = coursemap.mapid "
             "where sid=" + sid + " " +
-            "GROUP BY flowchart.sequence " +
+            "GROUP BY course.course_num " +
             "order by flowchart.sequence ASC")
     results = cursor.fetchall()
 
@@ -523,7 +532,7 @@ def viewFlowchart(sid):
         student_num = r['student_num']
         student_grades.append({'id': r['sequence'], 'student_name': r['Student Name'], 'student_num': r['student_num'],
                               'ccode': r['course_num'], 'coursename': r['title'], 'term': r['term'], 'prof': r['Professor Name'],
-                               'grade': r['letter_grade'], 'mapid': r['mapid'], 'gid': r['gid']})
+                               'grade': r['letter_grade'], 'mapid': r['mapid'], 'gid': r['gid'], 'fcomment': r['fcomment'], 'rcomment': r['rcomment']})
 
 
 
@@ -537,7 +546,7 @@ def viewFlowchart(sid):
     bBackKey = not (session['category'] == 'student')
 
     return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,
-                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form, bBackKey=bBackKey, random=r)
+                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form, bBackKey=bBackKey, random=r, admin_session = admin_session)
 
 
 
