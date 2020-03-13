@@ -13,7 +13,7 @@ import inputCSV
 app = Flask(__name__)
 Bootstrap(app)
 
-UPLOAD_FOLDER = 'C:/Users/Deka/PycharmProjects/ACCM7/Upload'
+UPLOAD_FOLDER = 'd:/1.MyDoc/2020W/CST8268_Project/project/ACCM7/Upload/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Change this to your secret key (can be anything, it's for extra protection)
@@ -24,6 +24,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_DB'] = 'accm'
 app.config.from_pyfile('./static/config.cfg')
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # app.config['MAIL_SERVER'] = "localhost"
 # app.config['MAIL_PORT'] = 8025
@@ -68,7 +69,7 @@ def login():
         elif (category == 'secretary'):
             result = cursor.execute('SELECT * FROM secretary WHERE id = %s', [username])
         elif (category == 'student'):
-            result = cursor.execute('SELECT student_num as id, pw FROM student WHERE student_num = %s', [username])
+            result = cursor.execute('SELECT student_num as id, pw, sid FROM student WHERE student_num = %s', [username])
 
         bUpload ={0: 'hidden', 1: ''} [(category == 'coordinator')|(category == 'secretary')]
 
@@ -85,6 +86,9 @@ def login():
                 session['category'] = category
                 session['bUpload'] = bUpload
                 session['revision'] = 1
+                if(category == 'student'):
+                    session['sid'] = account['sid']
+                
                 # Redirect to home page
                 return render_template('home.html', bUpload=bUpload)
             else:
@@ -122,6 +126,7 @@ def logout():
     session.pop('category', None)
     session.pop('bUpload', None)
     session.pop('revision', None)
+    session.pop('sid', None)
     # Redirect to login page
     return redirect(url_for('login'))
 
@@ -185,7 +190,7 @@ def home():
     # Check if user is loggedin
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('home.html', username=session['id'])
+        return render_template('home.html', bUpload=session['bUpload'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
@@ -300,6 +305,8 @@ def uploadGrade2DB():
 @app.route('/viewGrade', methods=['GET','POST'])
 def viewGrade():
     print("call viewGrade", session['category'])
+    if(session['category'] == 'student'):
+        return viewFlowchart(str(session['sid']))
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
@@ -400,9 +407,25 @@ def viewFlowchart(sid):
     print("call viewFlowchart", sid)
     revision = session['revision']
 
-    src = "/static/flowchart.js?"
-
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # retrieve grade input and update student's grade for that course
+    if request.method == 'POST':
+        new_grade = request.form['inputGradeFlowchart']
+        # get hidden grade id
+        grade_id = request.values.get('gradeID')
+        # get hidden mapid
+        get_mapid = request.values.get('mapid')
+        print("call viewFlowchart", new_grade)
+        print("call viewFlowchart", grade_id)
+        print("call viewFlowchart", get_mapid)
+
+        cursor.execute("update grade " +
+                       "SET letter_grade= '" + new_grade + "' " +
+                       "where gid=" + grade_id)
+        mysql.connection.commit()
+
+
 
     # get flowchart basic layout
     cursor.execute("SELECT flowchart.sequence, coursemap.mapid, course.course_num, course.title " +
@@ -503,29 +526,20 @@ def viewFlowchart(sid):
                                'grade': r['letter_grade'], 'mapid': r['mapid'], 'gid': r['gid']})
 
 
-    # retrieve grade input and update student's grade for that course
-    if request.method == 'POST':
-        new_grade = request.form['inputGradeFlowchart']
-        # get hidden grade id
-        grade_id = request.values.get('gradeID')
-        #get hidden mapid
-        get_mapid = request.values.get('mapid')
-        print("call viewFlowchart", new_grade)
-        print("call viewFlowchart", grade_id)
-        print("call viewFlowchart", get_mapid)
 
-        cursor.execute("update grade " +
-                       "SET letter_grade= '" +new_grade+ "' " +
-                       "where gid=" + grade_id)
-        mysql.connection.commit()
-        revision += 1
-        session['revision'] = revision
-        src = "/static/flowchart.js?"+str(revision)
-        print(src)
 
+
+
+    revision += 1
+    session['revision'] = revision
+
+    r = revision
+    bBackKey = not (session['category'] == 'student')
 
     return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,
-                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form, r=src)
+                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form, bBackKey=bBackKey, random=r)
+
+
 
 
 
