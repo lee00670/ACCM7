@@ -339,7 +339,7 @@ const program_map = {
 }
 
 var electives = [];
-console.log("student_results", student_results);
+
 // set grades and course info such as prof
 for (var i = 0; i < program_map.nodes.length; i++) {
     for (var g = 0; g < student_results.length; g++) {
