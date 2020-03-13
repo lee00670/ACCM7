@@ -13,7 +13,7 @@ import inputCSV
 app = Flask(__name__)
 Bootstrap(app)
 
-UPLOAD_FOLDER = 'd:/1.MyDoc/2020W/CST8268_Project/project/ACCM7/Upload/'
+UPLOAD_FOLDER = 'C:/Users/Deka/PycharmProjects/ACCM7/Upload'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Change this to your secret key (can be anything, it's for extra protection)
@@ -84,6 +84,7 @@ def login():
                 session['pw'] = account['pw']
                 session['category'] = category
                 session['bUpload'] = bUpload
+                session['revision'] = 1
                 # Redirect to home page
                 return render_template('home.html', bUpload=bUpload)
             else:
@@ -120,6 +121,7 @@ def logout():
     session.pop('pw', None)
     session.pop('category', None)
     session.pop('bUpload', None)
+    session.pop('revision', None)
     # Redirect to login page
     return redirect(url_for('login'))
 
@@ -391,72 +393,41 @@ def viewGrade():
 
     return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict, values=request.form)
 
+
 # http://localhost:5000/viewFlowchart
 @app.route('/viewFlowchart/<string:sid>', methods=['GET','POST'])
 def viewFlowchart(sid):
     print("call viewFlowchart", sid)
-    # select *
-    # from prerequisite inner
-    # join
-    # coursemap
-    # using(mapid)
-    # where
-    # pid = 20;
-    # select
-    # pid
-    # from enrollment where
-    # sid = 666;
-    # select *
-    # from grade inner
-    # join
-    # coursemap
-    # using(mapid)
-    # where
-    # sid = 666;
+    revision = session['revision']
+
+    src = "/static/flowchart.js?"
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # get courses to show on flowchart
-    cursor.execute('select flowchart.sequence, coursemap.mapid, course.course_num, course.title ' +
-                   'from coursemap ' +
-                   'inner join flowchart using(mapid) ' +
-                   'inner join course using (cid) ' +
-                   'order by flowchart.sequence ASC;')
-    results = cursor.fetchall()
-    # dict of flowchart courses
-    rDict = []
-    # dict to compare main courses to electives
-    main_courses = []
-    for r in results:
-        rDict.append({'id': r['sequence'], 'ccode': r['course_num'], 'coursename': r['title']})
-        main_courses.append(r['course_num'])
-    # get grade for specific student
-    cursor.execute(
-        "select concat(professor.fname, ' ' , professor.lname) as 'Professor Name', course.course_num, course.title, " +
-        "term, concat(student.fname, ' ', student.lname) as 'Student Name', student.student_num, letter_grade " +
-        "from grade " +
-        "inner join coursemap using(mapid) inner join course using (cid) inner join teach using(mapid) " +
-        "inner join professor using(profid) inner join student using (sid) " +
-        "where sid="+sid +";")
-    grades = cursor.fetchall()
-    # list holding students courses and grades, etc
-    student_results = []
-    # list holding student courses by course number
-    ged_list = []
-    for g in grades:
-        ged_list.append(g['course_num'])
-        student_results.append(
-            {'student_name': g['Student Name'], 'student_num': g['student_num'], 'ccode': g['course_num'],
-             'prof': g['Professor Name'], 'term': g['term'], 'grade': g['letter_grade']})
 
-    # list of electives student took
-    diff = list(set(ged_list) - set(main_courses))
+    # get flowchart basic layout
+    cursor.execute("SELECT flowchart.sequence, coursemap.mapid, course.course_num, course.title " +
+                   "FROM flowchart " +
+                   "INNER JOIN coursemap USING(mapid) " +
+                   "INNER JOIN course USING(cid) " +
+                   "ORDER BY flowchart.sequence ASC")
+    flowchart = cursor.fetchall()
+
+    # flowchart layout list
+    flowchart_courses = []
+
+    mainc = []
+    for c in flowchart:
+        flowchart_courses.append({'id': c['sequence'], 'mapid': c['mapid'], 'ccode': c['course_num'], 'title': c['title']})
+        mainc.append(c['course_num'])
+
+
 
     # get courses that have a prerequisite
-    pre_course = []
-    for course in rDict:
+    pre_courses = []
+    for course in flowchart_courses:
         # pre_course.append(course['course_num'])
         cursor.execute(
-            "SELECT flowchart.sequence, course.course_num, course.title, prerequisite.mapid, prerequisite.prerequisite " +
+            "SELECT distinct flowchart.sequence, course.course_num, course.title, prerequisite.mapid, prerequisite.prerequisite " +
             "FROM prerequisite " +
             "INNER JOIN coursemap USING (mapid) " +
             "INNER JOIN course USING (cid) " +
@@ -464,19 +435,19 @@ def viewFlowchart(sid):
             "WHERE course.course_num = '" + course['ccode'] + "' " +
             "ORDER BY flowchart.sequence ASC;")
 
-        prereqs = cursor.fetchall()
+        prereq_results = cursor.fetchall()
 
         # pre_course.append(prereqs)
-        for c in prereqs:
-            pre_course.append(
+        for c in prereq_results:
+            pre_courses.append(
                 {'sequence': c['sequence'], 'ccode': c['course_num'], 'title': c['title'], 'c_mapid': c['mapid'],
                  'c_prereq': c['prerequisite']})
 
     # get courses that are prerequisites
     items_c = []
-    for d in pre_course:
+    for d in pre_courses:
         cursor.execute(
-            "SELECT flowchart.sequence, course.course_num, course.title, coursemap.mapid as 'prereq_id' " +
+            "SELECT distinct flowchart.sequence, course.course_num, course.title, coursemap.mapid as 'prereq_id' " +
             "FROM course " +
             "INNER JOIN coursemap USING (cid) " +
             "INNER JOIN flowchart USING (mapid) " +
@@ -486,14 +457,17 @@ def viewFlowchart(sid):
         for c in pre_c:
             items_c.append({'sequence': c['sequence'], 'ccode': c['course_num'], 'title': c['title'],
                             'pre_id': c['prereq_id']})
+
     # links between prerequisite courses: sources and targets
     links = []
-    for i in range(len(pre_course)):
-        if pre_course[i]['c_prereq'] == items_c[i]['pre_id']:
+    for i in range(len(pre_courses)):
+        if pre_courses[i]['c_prereq'] == items_c[i]['pre_id']:
             links.append({'source_id': items_c[i]['sequence'], 'source': items_c[i]['ccode'],
-                          'target_id': pre_course[i]['sequence'], 'target': pre_course[i]['ccode']})
+                          'target_id': pre_courses[i]['sequence'], 'target': pre_courses[i]['ccode']})
     # remove duplicates
     seen = set()
+
+    #final prereq list
     prereq_links = []
     for duplicates in links:
         t = tuple(duplicates.items())
@@ -501,11 +475,57 @@ def viewFlowchart(sid):
             seen.add(t)
             prereq_links.append(duplicates)
 
-    # for j in range(len(rDict)):
-    #     if rDict[j]['course_num'] == prereq_links[j]['source']:
-    #         prereq_links.append({'id': rDict[j]['id']})
-    return render_template('viewFlowchart.html', flowchart_courses=rDict, prerequisite_links=prereq_links,
-                           student_courses=student_results, values=request.form)
+
+
+    # get student courses
+    cursor.execute(
+            "select distinct flowchart.sequence, concat(professor.fname, ' ' , professor.lname) as 'Professor Name', course.course_num, course.title, " +
+            "term, concat(student.fname, ' ', student.lname) as 'Student Name', student.student_num, letter_grade, coursemap.mapid, gid " +
+            "from grade " +
+            "inner join coursemap using(mapid) inner join course using (cid) inner join teach using(mapid) " +
+            "inner join professor using(profid) inner join student using (sid) " +
+            "left join flowchart on flowchart.mapid = coursemap.mapid "
+            "where sid=" + sid + " " +
+            "GROUP BY flowchart.sequence " +
+            "order by flowchart.sequence ASC")
+    results = cursor.fetchall()
+
+    student_name = ''
+    student_num = ''
+
+    # student results
+    student_grades = []
+    for r in results:
+        student_name = r['Student Name']
+        student_num = r['student_num']
+        student_grades.append({'id': r['sequence'], 'student_name': r['Student Name'], 'student_num': r['student_num'],
+                              'ccode': r['course_num'], 'coursename': r['title'], 'term': r['term'], 'prof': r['Professor Name'],
+                               'grade': r['letter_grade'], 'mapid': r['mapid'], 'gid': r['gid']})
+
+
+    # retrieve grade input and update student's grade for that course
+    if request.method == 'POST':
+        new_grade = request.form['inputGradeFlowchart']
+        # get hidden grade id
+        grade_id = request.values.get('gradeID')
+        #get hidden mapid
+        get_mapid = request.values.get('mapid')
+        print("call viewFlowchart", new_grade)
+        print("call viewFlowchart", grade_id)
+        print("call viewFlowchart", get_mapid)
+
+        cursor.execute("update grade " +
+                       "SET letter_grade= '" +new_grade+ "' " +
+                       "where gid=" + grade_id)
+        mysql.connection.commit()
+        revision += 1
+        session['revision'] = revision
+        src = "/static/flowchart.js?"+str(revision)
+        print(src)
+
+
+    return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,
+                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form, r=src)
 
 
 

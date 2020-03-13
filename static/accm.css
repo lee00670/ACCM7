@@ -1,14 +1,19 @@
-#container {
+#flowchart {
     /*min-height: 2000 px;*/
-    height: 905px;
+    height: 800px;
     padding-left: 0px;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
 }
 
-/*#container {
+p.error{
+            color: red;
+            padding-left: 5px;
+        }
+
+/*#flowchart {
     display: none;
 }*/
 

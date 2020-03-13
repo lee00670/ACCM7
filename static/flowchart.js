@@ -10,102 +10,102 @@ const program_map = {
         {
             'id': flowchart_courses[0].id,
             'courseid': flowchart_courses[0].ccode,
-            'coursename': flowchart_courses[0].coursename,
+            //'coursename': flowchart_courses[0].coursename,
 
-            'xcoord': 120,
+            'xcoord': 90,
             'ycoord': 10,
             'port': ['left', 'bottom', 'right']
         },
         {
-            'id': flowchart_courses[1].id,
-            'courseid': flowchart_courses[1].ccode,
-            'coursename': flowchart_courses[1].coursename,
+            'id': flowchart_courses[2].id,
+            'courseid': flowchart_courses[2].ccode,
+            //'coursename': flowchart_courses[2].coursename,
 
-            'xcoord': 330,
+            'xcoord': 270,
             'ycoord': 10,
             'port': ['left', 'bottom']
         },
         {
-            'id': flowchart_courses[2].id,
-            'courseid': flowchart_courses[2].ccode,
-            'coursename': flowchart_courses[2].coursename,
+            'id': flowchart_courses[4].id,
+            'courseid': flowchart_courses[4].ccode,
+            //'coursename': flowchart_courses[4].coursename,
 
-            'xcoord': 540,
+            'xcoord': 450,
             'ycoord': 10,
             'port': ['bottom']
         },
         {
-            'id': flowchart_courses[3].id,
-            'courseid': flowchart_courses[3].ccode,
-            'coursename': flowchart_courses[3].coursename,
+            'id': flowchart_courses[6].id,
+            'courseid': flowchart_courses[6].ccode,
+            //'coursename': flowchart_courses[6].coursename,
 
-            'xcoord': 750,
+            'xcoord': 630,
             'ycoord': 10,
             'port': []
         },
         {
-            'id': flowchart_courses[4].id,
-            'courseid': flowchart_courses[4].ccode,
-            'coursename': flowchart_courses[4].coursename,
+            'id': flowchart_courses[8].id,
+            'courseid': flowchart_courses[8].ccode,
+            //'coursename': flowchart_courses[8].coursename,
 
-            'xcoord': 960,
+            'xcoord': 810,
             'ycoord': 10,
             'port': []
         },
         {
-            'id': flowchart_courses[5].id,
-            'courseid': flowchart_courses[5].ccode,
-            'coursename': flowchart_courses[5].coursename,
+            'id': flowchart_courses[10].id,
+            'courseid': flowchart_courses[10].ccode,
+            //'coursename': flowchart_courses[10].coursename,
 
-            'xcoord': 1170,
+            'xcoord': 990,
             'ycoord': 10,
             'port': []
         },
 
         // level 2
         {
-            'id': flowchart_courses[6].id,
-            'courseid': flowchart_courses[6].ccode,
-            'coursename': flowchart_courses[6].coursename,
+            'id': flowchart_courses[12].id,
+            'courseid': flowchart_courses[12].ccode,
+            //'coursename': flowchart_courses[12].coursename,
 
-            'xcoord': 120,
-            'ycoord': 250,
+            'xcoord': 90,
+            'ycoord': 220,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[7].id,
-            'courseid': flowchart_courses[7].ccode,
-            'coursename': flowchart_courses[7].coursename,
+            'id': flowchart_courses[14].id,
+            'courseid': flowchart_courses[14].ccode,
+            //'coursename': flowchart_courses[14].coursename,
 
-            'xcoord': 330,
-            'ycoord': 250,
+            'xcoord': 270,
+            'ycoord': 220,
             'port': ['top', 'bottom']
         },
         {
-            'id': flowchart_courses[8].id,
-            'courseid': flowchart_courses[8].ccode,
-            'coursename': flowchart_courses[8].coursename,
+            'id': flowchart_courses[15].id,
+            'courseid': flowchart_courses[15].ccode,
+            //'coursename': flowchart_courses[15].coursename,
 
-            'xcoord': 540,
-            'ycoord': 250,
+            'xcoord': 450,
+            'ycoord': 220,
             'port': []
         },
         {
-            'id': flowchart_courses[9].id,
-            'courseid': flowchart_courses[9].ccode,
-            'coursename': flowchart_courses[9].coursename,
+            'id': flowchart_courses[16].id,
+            'courseid': flowchart_courses[16].ccode,
+            //'coursename': flowchart_courses[16].coursename,
 
-            'xcoord': 750,
-            'ycoord': 250,
+            'xcoord': 630,
+            'ycoord': 220,
             'port': []
         },
         {
-            'id': flowchart_courses[10].id,
-            'courseid': flowchart_courses[10].ccode,
-            'coursename': flowchart_courses[10].coursename,
+            'id': flowchart_courses[17].id,
+            'courseid': flowchart_courses[17].ccode,
+            //'coursename': flowchart_courses[17].coursename,
 
-            'xcoord': 960,
-            'ycoord': 250,
+            'xcoord': 810,
+            'ycoord': 220,
             'port': ['bottom']
         },
         {
@@ -113,93 +113,93 @@ const program_map = {
             'courseid': 'GED3002',
             'coursename': 'General Education Elective',
 
-            'xcoord': 1170,
-            'ycoord': 250,
+            'xcoord': 990,
+            'ycoord': 220,
             'port': []
         },
 
         // level 3
         {
-            'id': flowchart_courses[11].id,
-            'courseid': flowchart_courses[11].ccode,
-            'coursename': flowchart_courses[11].coursename,
+            'id': flowchart_courses[18].id,
+            'courseid': flowchart_courses[18].ccode,
+            //'coursename': flowchart_courses[18].coursename,
 
-            'xcoord': 120,
-            'ycoord': 490,
+            'xcoord': 90,
+            'ycoord': 430,
             'port': ['left', 'top']
         },
         {
-            'id': flowchart_courses[12].id,
-            'courseid': flowchart_courses[12].ccode,
-            'coursename': flowchart_courses[12].coursename,
+            'id': flowchart_courses[19].id,
+            'courseid': flowchart_courses[19].ccode,
+            //'coursename': flowchart_courses[19].coursename,
 
-            'xcoord': 330,
-            'ycoord': 490,
+            'xcoord': 270,
+            'ycoord': 430,
             'port': ['left', 'bottom']
         },
         {
-            'id': flowchart_courses[13].id,
-            'courseid': flowchart_courses[13].ccode,
-            'coursename': flowchart_courses[13].coursename,
+            'id': flowchart_courses[20].id,
+            'courseid': flowchart_courses[20].ccode,
+            //'coursename': flowchart_courses[20].coursename,
 
-            'xcoord': 540,
-            'ycoord': 490,
+            'xcoord': 450,
+            'ycoord': 430,
             'port': ['top', 'right']
         },
         {
-            'id': flowchart_courses[14].id,
-            'courseid': flowchart_courses[14].ccode,
-            'coursename': flowchart_courses[14].coursename,
+            'id': flowchart_courses[22].id,
+            'courseid': flowchart_courses[22].ccode,
+            //'coursename': flowchart_courses[22].coursename,
 
-            'xcoord': 960,
-            'ycoord': 490,
+            'xcoord': 810,
+            'ycoord': 430,
             'port': ['top']
         },
         {
             'id': 17,
             'courseid': 'GED3002',
-            'coursename': 'General Education Elective',
+            //'coursename': 'General Education Elective',
 
-            'xcoord': 1170,
-            'ycoord': 490,
+            'xcoord': 990,
+            'ycoord': 430,
             'port': []
         },
 
         // level 4
         {
-            'id': flowchart_courses[15].id,
-            'courseid': flowchart_courses[15].ccode,
-            'coursename': flowchart_courses[15].coursename,
+            'id': flowchart_courses[23].id,
+            'courseid': flowchart_courses[23].ccode,
+            //'coursename': flowchart_courses[23].coursename,
 
-            'xcoord': 120,
-            'ycoord': 730,
+            'xcoord': 90,
+            'ycoord': 640,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[16].id,
-            'courseid': flowchart_courses[16].ccode,
-            'coursename': flowchart_courses[16].coursename,
+            'id': flowchart_courses[24].id,
+            'courseid': flowchart_courses[24].ccode,
+            //'coursename': flowchart_courses[24].coursename,
 
-            'xcoord': 330,
-            'ycoord': 730,
+            'xcoord': 270,
+            'ycoord': 640,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[17].id,
-            'courseid': flowchart_courses[17].ccode,
-            'coursename': flowchart_courses[17].coursename,
+            'id': flowchart_courses[25].id,
+            'courseid': flowchart_courses[25].ccode,
+            //'coursename': flowchart_courses[25].coursename,
 
-            'xcoord': 540,
-            'ycoord': 730,
+            'xcoord': 450,
+            'ycoord': 640,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[18].id,
-            'courseid': flowchart_courses[18].ccode,
-            'coursename': flowchart_courses[18].coursename,
+            'id': flowchart_courses[26].id,
+            'courseid': flowchart_courses[26].ccode,
+            //'coursename': flowchart_courses[26].coursename,
 
-            'xcoord': 750,
-            'ycoord': 730,
+            'xcoord': 630,
+            'ycoord': 640,
             'port': ['top']
         },
     ],
@@ -208,11 +208,11 @@ const program_map = {
         {
             'source': {
                 'id': prerequisite_links[4].source_id,
-                'port': 'left'
+                'port': 'bottom'
             },
             'target': {
                 'id': prerequisite_links[4].target_id,
-                'port': 'left'
+                'port': 'top'
             }
         },
         {
@@ -268,11 +268,11 @@ const program_map = {
         {
             'source': {
                 'id': prerequisite_links[3].source_id,
-                'port': 'bottom'
+                'port': 'left'
             },
             'target': {
                 'id': prerequisite_links[3].target_id,
-                'port': 'top'
+                'port': 'left'
             }
         },
         {
@@ -338,19 +338,58 @@ const program_map = {
     ]
 }
 
+var electives = [];
+
 // set grades and course info such as prof
 for (var i = 0; i < program_map.nodes.length; i++) {
-    for (var g = 0; g < student_courses.length; g++) {
-        if(program_map.nodes[i].courseid == student_courses[g].ccode) {
-            program_map.nodes[i].grade = student_courses[g].grade;
+    for (var g = 0; g < student_results.length; g++) {
+        if(program_map.nodes[i].courseid == student_results[g].ccode) {
+            program_map.nodes[i].grade = student_results[g].grade;
+            program_map.nodes[i].mapid = student_results[g].mapid;
+            program_map.nodes[i].title = student_results[g].coursename;
+            program_map.nodes[i].studentname = student_results[g].student_name;
+            program_map.nodes[i].studentnum = student_results[g].student_num;
+            program_map.nodes[i].gid = student_results[g].gid;
             //console.log(program_map.nodes[i].grade);
-        }
-        else {
-            console.log(student_courses[g].ccode);
         }
     }
 }
 
+for (var g = 0; g < student_results.length; g++) {
+        if (student_results[g].id == null) {
+            //console.log(student_results[g].ccode);
+
+            if (student_results[g].ccode !='MAT8001') {
+                electives.push(student_results[g]);
+            }
+        }
+    }
+
+var elective_options = [];
+for (var i = 0; i < program_map.nodes.length; i++) {
+    if (program_map.nodes[i].courseid === 'GED3002') {
+        elective_options.push(program_map.nodes[i]);
+    }
+}
+
+if (electives.length == 1 ) {
+    console.log(electives[0]);
+    elective_options[0].grade = electives[0].grade;
+    elective_options[0].mapid = electives[0].mapid;
+    elective_options[0].gid = electives[0].gid;
+    elective_options[0].title = electives[0].coursename;
+}
+else if (electives.length == 2) {
+    elective_options[0].grade = electives[0].grade;
+    elective_options[0].mapid = electives[0].mapid;
+    elective_options[0].gid = electives[0].gid;
+    elective_options[0].title = electives[0].coursename;
+
+    elective_options[1].grade = electives[0].grade;
+    elective_options[1].mapid = electives[0].mapid;
+    elective_options[1].gid = electives[0].gid;
+    elective_options[1].title = electives[0].coursename;
+}
 
 // graph: contains a reference to all components of your diagram
 // graph is a model holding all cells (elements/links) which are stored in property 'cells'
@@ -360,12 +399,12 @@ joint.setTheme('modern');
 
 // paper: responsible for rendering the graph
 var paper = new joint.dia.Paper({
-            el: $('div#container'),
+            el: $('div#flowchart'),
             model: graph,
-            width: $('body').width(),
-            height: $('body').height(),
+            width: $('div#flowchart').width(),
+            height: $('div#flowchart').height(),
             gridSize: 10,
-            //drawGrid: true,
+            drawGrid: true,
             /*background: {
                 color: 'rgba(0, 255, 0, 0.3)'
             }*/
@@ -381,16 +420,10 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
         selector: 'box',
     }, {
         tagName: 'text',
-        selector: 'courseName'
-    }, {
-        tagName: 'text',
         selector: 'courseCode'
     }, {
         tagName: 'text',
         selector: 'grade'
-    }, {
-        tagName: 'text',
-        selector: 'editGrade'
     }, {
         tagName: 'image',
         selector: 'editIcon'
@@ -402,10 +435,10 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
     defaults: joint.util.defaultsDeep({
 
         type: 'basic.CourseBox',
-        size: { width: 150, height: 140 },
+        size: { width: 120, height: 110 },
         attrs: {
             'box': {
-                fill: '#28A745', stroke: '#28A745', width: 150, height: 140,
+                fill: '#28A745', stroke: '#28A745', width: 120, height: 110,
                 rx: 10,
                 ry: 10,
                 filter: {
@@ -419,12 +452,12 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
                 cursor: 'default'
             },
             //'courseName': { 'cursor': 'default', 'font-size': 13.5, text: '', 'ref-x': .5, 'ref-y': 25, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
-            'courseCode': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 40, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
-            'grade': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 90, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
+            'courseCode': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 30, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
+            'grade': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 60, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
             /*'editGrade': { 'font-size': 16, 'font-weight': 'bold', text: 'Edit', 'ref-x': .6, 'ref-y': 120, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#00ccff',
             event: 'element:edit', cursor: 'pointer'},*/
-            'editIcon': { 'xlink:href': '', 'ref-x': .8, 'ref-y': 108, ref: 'box', width: 25, height: 28,  event: 'element:edit', cursor: 'pointer'},
-            'infoIcon': { 'xlink:href': '', 'ref-x': 5, 'ref-y': 105, ref: 'box', width: 30, height: 30,  event: 'element:info', cursor: 'pointer'}
+            'editIcon': { 'xlink:href': '', 'ref-x': .75, 'ref-y': 78, ref: 'box', width: 25, height: 28,  event: 'element:edit', cursor: 'pointer'},
+            'infoIcon': { 'xlink:href': '', 'ref-x': 5, 'ref-y': 76, ref: 'box', width: 30, height: 30,  event: 'element:info', cursor: 'pointer'}
         },
         // define port groups
     ports: {
@@ -479,7 +512,7 @@ var portsides = ['top', 'right', 'bottom', 'left'];
 for (i=0; i < courseList.length; i++) {
     var course = new joint.shapes.basic.CourseBox({
     position: { x: courseList[i].xcoord, y: courseList[i].ycoord },
-    size: { width: 150, height: 140 },
+    size: { width: 120, height: 110 },
     id: courseList[i].id,
     attrs: {
         //courseName: { text: joint.util.breakText(courseList[i].coursename, { width: 150 })},
@@ -522,7 +555,7 @@ for (var l=0; l < prereqlinks.length; l++) {
                 step: 15,
                 startDirections: [prereqlinks[l].source.port],
                 endDirections: [prereqlinks[l].target.port],
-                maximumLoops: 200
+                maximumLoops: 300
             }
         },
         attrs: {
@@ -541,19 +574,77 @@ for (var l=0; l < prereqlinks.length; l++) {
 // prevent moving shapes
 paper.setInteractivity({elementMove: false});
 
-paper.on('element:edit',
-    function(elementView, evt, x, y) {
+// paper event edit
+paper.on('element:edit', function(elementView, evt, x, y) {
         var getGrade;
-        var getCourse;
+        var getCourseId;
+        var getMapid;
+        var getTitle;
+        var getName;
+        var getGid;
+        var k;
+        var j;
+        for(k=0; k<courseList.length; k++){
+            if(courseList[k].id === elementView.model.id) {
+                getGrade = courseList[k].grade;
+                getCourseId = courseList[k].courseid;
+                getMapid = courseList[k].mapid;
+                getTitle = courseList[k].title;
+                getName = courseList[k].studentname;
+                getNum = courseList[k].studentnum;
+                getGid = courseList[k].gid;
+
+            }
+        }
+        //alert('Edit grade: ' + getGrade + ' for course code '+ getCourse + ' ' + getMapid);
+        //$('#modal-launch').attr('data-target','#modalLoginForm');
+
+
+        // edit modal
+        $('#editGradeFlowchart').modal('show');
+        $('input#courseCode').val(getCourseId);
+        $('input#gradeID').val(getGid)
+        $('input#courseTitle').val(getTitle);
+        $('input#inputGradeFlowchart').val(getGrade);
+        $('input#mapid').val(getMapid);
+
+
+    }
+);
+
+
+
+// paper event edit
+paper.on('element:info', function(elementView, evt, x, y) {
+        var getGrade;
+        var getCourseId;
+        var getMapid;
+        var getTitle;
+        var getName;
+        var getGid;
         var k;
         for(k=0; k<courseList.length; k++){
             if(courseList[k].id === elementView.model.id) {
                 getGrade = courseList[k].grade;
-                getCourse = courseList[k].courseid;
+                getCourseId = courseList[k].courseid;
+                getMapid = courseList[k].mapid;
+                getTitle = courseList[k].title;
+                getName = courseList[k].studentname;
+                getNum = courseList[k].studentnum;
+                getGid = courseList[k].gid;
             }
         }
-       // alert('Edit grade: ' + getGrade + ' for course code '+ getCourse);
-        $('#modal-launch').attr('data-target','#modalLoginForm');
+        //alert('Edit grade: ' + getGrade + ' for course code '+ getCourse + ' ' + getMapid);
+        //$('#modal-launch').attr('data-target','#modalLoginForm');
+
+
+
+        // info modal
+        $('#infoFlowchart').modal('show');
+        $('input#infocourseCode').val(getCourseId);
+        $('input#infocourseTitle').val(getTitle);
+        $('input#mapid').val(getMapid);
+
     }
 );
 
