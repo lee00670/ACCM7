@@ -278,9 +278,8 @@ def uploadGrade2DB():
 # http://localhost:5000/viewGrade
 @app.route('/viewGrade', methods=['GET','POST'])
 def viewGrade():
-    print("call viewGrade", session['category'])
     if(session['category'] == 'student'):
-        return viewFlowchart(str(session['sid']))
+        return viewFlowchart(str(session['sid']), '','','','')
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
@@ -382,8 +381,8 @@ def viewGrade():
 
 @app.route('/viewFlowchart/<string:sid>/<string:sVersion>/<string:sProgram>/<string:sLevel>/<string:sCourse>', methods=['GET','POST'])
 def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
-    print("call viewFlowchart", sid, sVersion, sProgram, sLevel, sCourse)
-    print("call viewFlowchart", session['category'])
+    # print("call viewFlowchart", sid, sVersion, sProgram, sLevel, sCourse)
+    # print("call viewFlowchart", session['category'])
 
     # get coordinator and secretary session
     if session['category'] is 'coordinator' or 'secretary':
@@ -519,10 +518,10 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
 
     r = revision
     bBackKey = not (session['category'] == 'student')
-
+    bEditGrade = (session['category'] == 'coordinator' or session['category'] == 'secretary')
     v = {'version': sVersion, 'program': sProgram, 'level':sLevel, 'course': sCourse}
 
     return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,
                            student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form,
-                           bBackKey=bBackKey, random=r, admin_session = admin_session, v=v)
+                           bBackKey=bBackKey, random=r, admin_session = admin_session, v=v, bEditGrade=bEditGrade)
 
