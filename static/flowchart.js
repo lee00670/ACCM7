@@ -1,8 +1,3 @@
-/*function myFunc() {
-    return flowchart_list
-}*/
-
-
 
 const program_map = {
     'nodes':[

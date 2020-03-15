@@ -376,7 +376,12 @@
             {% for r in rDict %}
                 <tr>
                 <th scope="row">
-                    <a href="{{ url_for('viewFlowchart', sid= r['sid'] ) }}" class="badge badge-flowchart" title="Course flowchart" value="{{ r['sid'] }}"><i class="fas fa-project-diagram" ></i></a> {{ r['student_num'] }}</th>
+                    {% if values['course'] %}
+                        <a href="{{ url_for('viewFlowchart', sid= r['sid'], sVersion=values['version'], sProgram=values['program'], sLevel=values['level'], sCourse=values['course']) }}" class="badge badge-flowchart" title="Course flowchart" value="{{ r['sid'] }}"><i class="fas fa-project-diagram" ></i></a> {{ r['student_num'] }}</th>
+                    {% else %}
+                        <a href="{{ url_for('viewFlowchart', sid= r['sid'], sVersion=values['version'], sProgram=values['program'], sLevel=values['level'], sCourse='null') }}" class="badge badge-flowchart" title="Course flowchart" value="{{ r['sid'] }}"><i class="fas fa-project-diagram" ></i></a> {{ r['student_num'] }}</th>
+                    {% endif %}
+
                 <td>{{ r['fullname'] }}</td>
 {#                <td>{{ r['level'] }}</td>#}
 

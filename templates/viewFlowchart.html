@@ -1,141 +1,86 @@
 {% extends "bootstrap/base.html" %}
 {% include 'layout.html' %}
-{% block scripts %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.js"></script>
-        <script src="http://d3js.org/d3.v3.min.js"></script>
-        <script type="text/javascript">
-        var flowchart_courses = {{ flowchart_courses|tojson }}
-        var prerequisite_links = {{ prerequisite_links|tojson }}
-        var student_results = {{ student_results|tojson }}
-        var admin_session = {{ admin_session|tojson }}
-
-       $(document).ready(function(e){
-            $('#editGradeFlowchartForm').on('submit',function(){
-                //alert( $('#inputGradeFlowchart').val() );
-                //location.reload();
-            });
-
-            $('#infoFlowchartForm').on('submit',function(){
-                //alert( $('#inputGradeFlowchart').val() );
-                //location.reload();
-            });
-        });
-
-
- function validateGrade() {
-            console.log('validategrade');
-
-            // retrieve grade input
-            var getGrade = $('input#inputGradeFlowchart').val();
-
-            var valid = true;
-            $('p#editGradeError').text('');
-
-            // if there is only one char that char must be a letter
-            //var letters = ['A', 'B', 'C', 'D', 'F', 'T'];
-
-            //
-            //var special_chars = ['-','+'];
-
-            if (getGrade.length == 0) {
-                console.log('you must enter grade');
-                $('p#editGradeError').text('Please enter a grade');
-                valid = false;
-            }
-            else if (getGrade.length > 2) {
-                console.log('too many chars');
-                $('p#editGradeError').text('Invalid value');
-                valid = false;
-            }
-
-            {#else if (getGrade.length == 1) {
-
-                for (var l = 0; l < letters.length; l++) {
-                    if (getGrade != letters[l]) {
-                        $('p#editGradeError').text('Invalid value');
-                        valid = false;
-                    }
-                }
-                //console.log(getGrade[0]);
-            }
-
-            else if (getGrade.length == 2) {
-                for (var l = 0; l < letters.length; l++) {
-                    for (var s = 0; s < special_chars; s++) {
-                        if (getGrade[0] != letters[l]) {
-                            $('p#editGradeError').text('Invalid value');
-                            valid = false;
-                        }
-                        else if (getGrade[1] != special_chars[s]) {
-                            $('p#editGradeError').text('Invalid value');
-                            valid = false;
-                        }
-                    }
-                }
-                //console.log(getGrade[1]);
-            }#}
-
-
-
-            console.log(getGrade);
-            return valid;
-        }
-
-        </script>
-        <script src="/static/flowchart.js"></script>
-        {{super()}}
-    <style>
-        div.modal-footer
-        {
-            z-index: 9900000 !important;
-        }
-    </style>
-    {% endblock %}
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='accm.css')}}">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.css">
     <script  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="  crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
-
     {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <script type=text/javascript>
+    var flowchart_courses = {{ flowchart_courses|tojson }}
+    var prerequisite_links = {{ prerequisite_links|tojson }}
+    var student_results = {{ student_results|tojson }}
+    var admin_session = {{ admin_session|tojson }}
 
-    $( document ).ready(function() {
+    $( document ).ready(function()
+    {
         $(".hBack").on("click", function(e){
             e.preventDefault();
-            window.history.back();
+            window.history.go(-1);
         });
-
     });
-    function goBack() {
-        e.preventDefault();
-      history.back()
-    }
 
+    function validateGrade() {
+        console.log('validategrade');
+        // retrieve grade input
+        var getGrade = $('input#inputGradeFlowchart').val();
+        var valid = true;
+        $('p#editGradeError').text('');
+
+        if (getGrade.length == 0) {
+            console.log('you must enter grade');
+            $('p#editGradeError').text('Please enter a grade');
+            valid = false;
+        }
+        else if (getGrade.length > 2) {
+            console.log('too many chars');
+            $('p#editGradeError').text('Invalid value');
+            valid = false;
+        }
+        console.log(getGrade);
+        return valid;
+    }
     </script>
 
+    <script src="/static/flowchart.js"></script>
+    {{super()}}
 
-    <style>
-
-    </style>
 
 {% endblock %}
 
 {% block content %}
-     <h1>Student Program Progress</h1>
-    <h2>{{ studentName }} : {{ studentNum }} </h2>
-    <form>
-	{% if bBackKey %}
-    <button class="btn btn-secondary hBack" type="button"><i class="fas fa-chevron-left"></i></button>
-	{% endif %}
-    </form>
 
-     <div class="container"  id="flowchart">
- </div>
+    <div class="w-100 py-5 text-center">
+    <h1>Student Program Progress</h1>
+        <h2> {{ studentName }} <span style="font-size: 28px;color: darkgreen;"> [{{ studentNum }}]</span></h2>
+
+
+    </div>
+    <div class="container"  id="buttonPlace">
+    <hr>
+     {% if bBackKey %}
+            <form id="backForm" action="{{ url_for('viewGrade') }}" method="post">
+            <input type="text" class="form-control-plaintext" name = "version" id="version" value="{{ v['version'] }}" hidden>
+            <input type="text" class="form-control-plaintext" name = "program" id="program" value="{{ v['program'] }}" hidden>
+            <input type="text" class="form-control-plaintext" name = "level" id="level" value="{{ v['level'] }}" hidden>
+            <input type="text" class="form-control-plaintext" name = "course" id="course" value="{{ v['course'] }}" hidden>
+            <button type="submit" class="btn btn-secondary" type="button" ><i class="fas fa-chevron-left"></i></button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="container"  id="flowchart">
+
+    </div>
 
     <!-- Info Modal -->
     <div class="modal fade" id="infoFlowchart" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -148,7 +93,7 @@
             </button>
           </div>
 
-            <form id="infoFlowchartForm" action="{{ url_for('viewFlowchart', sid= sid ) }}" method="POST" class="needs-validation" >
+            <form id="infoFlowchartForm" action="{{ url_for('viewFlowchart', sid= sid, sVersion=v['version'], sProgram=v['program'], sLevel=v['level'], sCourse=v['course'] ) }}" method="POST" class="needs-validation" >
           <div class="modal-body">
 
               <div class="form-group row">
@@ -217,7 +162,7 @@
             </button>
           </div>
 
-            <form id="editGradeFlowchartForm" action="{{ url_for('viewFlowchart', sid= sid ) }}" method="POST" class="needs-validation" onsubmit="return validateGrade()">
+            <form id="editGradeFlowchartForm" action="{{ url_for('viewFlowchart', sid= sid, sVersion=v['version'], sProgram=v['program'], sLevel=v['level'], sCourse=v['course'] ) }}" method="POST" class="needs-validation" onsubmit="return validateGrade()">
           <div class="modal-body">
 
               <div class="form-group row">
@@ -254,17 +199,7 @@
       </div>
     </div>
 
-
-
 <footer class="container ">
   <p class="float-right">© Algonquin College 2019-2020</p>
 </footer>
-
-
 {% endblock %}
-
-
-
-
-
-

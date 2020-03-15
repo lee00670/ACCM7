@@ -33,6 +33,7 @@ app.config.from_pyfile('./static/config.cfg')
 app.config['MAIL_SERVER'] = "smtp.googlemail.com"
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = 1
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -94,23 +95,8 @@ def login():
                 # Account doesnt exist or username/password incorrect
                 msg = 'Incorrect username/password'
 
+        cursor.close()
 
-        # # Fetch one record and return result
-        # account = cursor.fetchone()
-        # # If account exists in accounts table in out database
-        # if account:
-        #     # Create session data, we can access this data in other routes
-        #     session['loggedin'] = True
-        #     session['id'] = account['id']
-        #     session['pw'] = account['pw']
-        #     session['category'] = category
-        #     session['bUpload'] = bUpload
-        #     # Redirect to home page
-        #     return render_template('home.html', bUpload=bUpload)
-        #
-        # else:
-        #     # Account doesnt exist or username/password incorrect
-        #     msg = 'Incorrect username/password'
     # Show the login form with message (if any)
     return render_template('index.html', msg=msg)
 
@@ -156,6 +142,7 @@ def register():
             cursor.execute('SELECT * FROM student WHERE student_num = "'+username+'"')
 
         account = cursor.fetchone()
+        cursor.close()
         # If account exists show error and validation checks
         if account:
             msg = 'Account already exists!'
@@ -242,34 +229,22 @@ def profile():
                         cursor.execute('update student set pw = %s WHERE student_num = %s',
                                        (pw, [session['id']]))
                     mysql.connection.commit()
+                    cursor.close()
                     #save new hash to session
                     session['pw'] = pw
                     return render_template('profile.html', account=account, category=session['category'], msg="New password is updated.")
                 except (MySQLdb.Error, MySQLdb.Warning) as e:
                     print(e)
+                    cursor.close()
                     return render_template('profile.html', account=account, category=session['category'], msg="New password is not changed.")
             else:
+                cursor.close()
                 return render_template('profile.html', account=account, category=session['category'],
                                        msg="New password is not changed.")
-
+        cursor.close()
         return render_template('profile.html', account=account, category=session['category'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
-
-# # http://localhost:5000/input -
-# @app.route('/input')
-# def input():
-#     # upload csv file to mysql
-#     if 'loggedin' in session:
-#
-#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-#         # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
-#         cursor.execute('SELECT * FROM user WHERE id = %s', [session['id']])
-#         account = cursor.fetchone()
-#         # Show the profile page with account info
-#         return render_template('input.html')
-#     # User is not loggedin redirect to login page
-#     return redirect(url_for('login'))
 
 # http://localhost:5000/uploadGrade
 @app.route('/uploadGrade')
@@ -340,7 +315,7 @@ def viewGrade():
             cursor.execute(query)
             mysql.connection.commit()
 
-        if 'course' in request.form and request.form['course']:
+        if 'course' in request.form and request.form['course'] and request.form['course'] != 'null':
             query = "select c.course_num, c.title, coursemap.level, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by course_num"
         else:
             query = "select c.course_num, c.title, coursemap.level, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' group by c.course_num order by course_num"
@@ -353,6 +328,7 @@ def viewGrade():
         query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' order by s.student_num, title"
         cursor.execute(query)
         result = cursor.fetchall()
+        cursor.close()
         s = ''
         rDict=()
         d={}
@@ -400,10 +376,13 @@ def viewGrade():
     return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict, values=request.form)
 
 
+
+
 # http://localhost:5000/viewFlowchart
-@app.route('/viewFlowchart/<string:sid>', methods=['GET','POST'])
-def viewFlowchart(sid):
-    print("call viewFlowchart", sid)
+
+@app.route('/viewFlowchart/<string:sid>/<string:sVersion>/<string:sProgram>/<string:sLevel>/<string:sCourse>', methods=['GET','POST'])
+def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
+    print("call viewFlowchart", sid, sVersion, sProgram, sLevel, sCourse)
     print("call viewFlowchart", session['category'])
 
     # get coordinator and secretary session
@@ -535,21 +514,15 @@ def viewFlowchart(sid):
                                'grade': r['letter_grade'], 'mapid': r['mapid'], 'gid': r['gid'], 'fcomment': r['fcomment'], 'rcomment': r['rcomment']})
 
 
-
-
-
-
     revision += 1
-    session['revision'] = revision
+    # session['revision'] = revision
 
     r = revision
     bBackKey = not (session['category'] == 'student')
 
+    v = {'version': sVersion, 'program': sProgram, 'level':sLevel, 'course': sCourse}
+
     return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,
-                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form, bBackKey=bBackKey, random=r, admin_session = admin_session)
+                           student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form,
+                           bBackKey=bBackKey, random=r, admin_session = admin_session, v=v)
 
-
-
-
-
-    # return render_template('viewFlowchart_old.html', values=request.form)
