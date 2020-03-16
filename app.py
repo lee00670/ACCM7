@@ -397,7 +397,12 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
 
     # retrieve grade input and update student's grade for that course
     if request.method == 'POST':
+        #get grade input
         new_grade = request.form['inputGradeFlowchart']
+        #get updated faculty comment
+        new_fcomment = request.form['editcourseFcomment']
+        #get updated review comment
+        new_rcomment = request.form['editcourseRcomment']
         # get hidden grade id
         grade_id = request.values.get('gradeID')
         # get hidden mapid
@@ -405,12 +410,13 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
         print("call viewFlowchart", new_grade)
         print("call viewFlowchart", grade_id)
         print("call viewFlowchart", get_mapid)
+        print("call viewFlowchart", new_fcomment)
+        print("call viewFlowchart", new_rcomment)
 
         cursor.execute("update grade " +
-                       "SET letter_grade= '" + new_grade + "' " +
+                       "SET letter_grade= '" + new_grade + "', fcomment = '" + new_fcomment + "', rcomment = '" + new_rcomment + "' " +
                        "where gid=" + grade_id)
         mysql.connection.commit()
-
 
 
     # get flowchart basic layout

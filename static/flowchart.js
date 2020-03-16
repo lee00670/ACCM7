@@ -5,8 +5,6 @@ const program_map = {
         {
             'id': flowchart_courses[0].id,
             'courseid': flowchart_courses[0].ccode,
-            //'coursename': flowchart_courses[0].coursename,
-
             'xcoord': 90,
             'ycoord': 10,
             'port': ['left', 'bottom', 'right']
@@ -14,8 +12,6 @@ const program_map = {
         {
             'id': flowchart_courses[2].id,
             'courseid': flowchart_courses[2].ccode,
-            //'coursename': flowchart_courses[2].coursename,
-
             'xcoord': 270,
             'ycoord': 10,
             'port': ['left', 'bottom']
@@ -23,8 +19,6 @@ const program_map = {
         {
             'id': flowchart_courses[4].id,
             'courseid': flowchart_courses[4].ccode,
-            //'coursename': flowchart_courses[4].coursename,
-
             'xcoord': 450,
             'ycoord': 10,
             'port': ['bottom']
@@ -32,8 +26,6 @@ const program_map = {
         {
             'id': flowchart_courses[6].id,
             'courseid': flowchart_courses[6].ccode,
-            //'coursename': flowchart_courses[6].coursename,
-
             'xcoord': 630,
             'ycoord': 10,
             'port': []
@@ -41,8 +33,6 @@ const program_map = {
         {
             'id': flowchart_courses[8].id,
             'courseid': flowchart_courses[8].ccode,
-            //'coursename': flowchart_courses[8].coursename,
-
             'xcoord': 810,
             'ycoord': 10,
             'port': []
@@ -50,8 +40,6 @@ const program_map = {
         {
             'id': flowchart_courses[10].id,
             'courseid': flowchart_courses[10].ccode,
-            //'coursename': flowchart_courses[10].coursename,
-
             'xcoord': 990,
             'ycoord': 10,
             'port': []
@@ -61,8 +49,6 @@ const program_map = {
         {
             'id': flowchart_courses[12].id,
             'courseid': flowchart_courses[12].ccode,
-            //'coursename': flowchart_courses[12].coursename,
-
             'xcoord': 90,
             'ycoord': 220,
             'port': ['top']
@@ -70,8 +56,6 @@ const program_map = {
         {
             'id': flowchart_courses[14].id,
             'courseid': flowchart_courses[14].ccode,
-            //'coursename': flowchart_courses[14].coursename,
-
             'xcoord': 270,
             'ycoord': 220,
             'port': ['top', 'bottom']
@@ -79,8 +63,6 @@ const program_map = {
         {
             'id': flowchart_courses[15].id,
             'courseid': flowchart_courses[15].ccode,
-            //'coursename': flowchart_courses[15].coursename,
-
             'xcoord': 450,
             'ycoord': 220,
             'port': []
@@ -88,8 +70,6 @@ const program_map = {
         {
             'id': flowchart_courses[16].id,
             'courseid': flowchart_courses[16].ccode,
-            //'coursename': flowchart_courses[16].coursename,
-
             'xcoord': 630,
             'ycoord': 220,
             'port': []
@@ -97,8 +77,6 @@ const program_map = {
         {
             'id': flowchart_courses[17].id,
             'courseid': flowchart_courses[17].ccode,
-            //'coursename': flowchart_courses[17].coursename,
-
             'xcoord': 810,
             'ycoord': 220,
             'port': ['bottom']
@@ -106,8 +84,6 @@ const program_map = {
         {
             'id': 12,
             'courseid': 'GED3002',
-            'coursename': 'General Education Elective',
-
             'xcoord': 990,
             'ycoord': 220,
             'port': []
@@ -117,8 +93,6 @@ const program_map = {
         {
             'id': flowchart_courses[18].id,
             'courseid': flowchart_courses[18].ccode,
-            //'coursename': flowchart_courses[18].coursename,
-
             'xcoord': 90,
             'ycoord': 430,
             'port': ['left', 'top']
@@ -126,8 +100,6 @@ const program_map = {
         {
             'id': flowchart_courses[19].id,
             'courseid': flowchart_courses[19].ccode,
-            //'coursename': flowchart_courses[19].coursename,
-
             'xcoord': 270,
             'ycoord': 430,
             'port': ['left', 'bottom']
@@ -135,8 +107,6 @@ const program_map = {
         {
             'id': flowchart_courses[20].id,
             'courseid': flowchart_courses[20].ccode,
-            //'coursename': flowchart_courses[20].coursename,
-
             'xcoord': 450,
             'ycoord': 430,
             'port': ['top', 'right']
@@ -144,8 +114,6 @@ const program_map = {
         {
             'id': flowchart_courses[22].id,
             'courseid': flowchart_courses[22].ccode,
-            //'coursename': flowchart_courses[22].coursename,
-
             'xcoord': 810,
             'ycoord': 430,
             'port': ['top']
@@ -153,8 +121,6 @@ const program_map = {
         {
             'id': 17,
             'courseid': 'GED3002',
-            //'coursename': 'General Education Elective',
-
             'xcoord': 990,
             'ycoord': 430,
             'port': []
@@ -164,8 +130,6 @@ const program_map = {
         {
             'id': flowchart_courses[23].id,
             'courseid': flowchart_courses[23].ccode,
-            //'coursename': flowchart_courses[23].coursename,
-
             'xcoord': 90,
             'ycoord': 640,
             'port': ['top']
@@ -173,8 +137,6 @@ const program_map = {
         {
             'id': flowchart_courses[24].id,
             'courseid': flowchart_courses[24].ccode,
-            //'coursename': flowchart_courses[24].coursename,
-
             'xcoord': 270,
             'ycoord': 640,
             'port': ['top']
@@ -182,8 +144,6 @@ const program_map = {
         {
             'id': flowchart_courses[25].id,
             'courseid': flowchart_courses[25].ccode,
-            //'coursename': flowchart_courses[25].coursename,
-
             'xcoord': 450,
             'ycoord': 640,
             'port': ['top']
@@ -191,8 +151,6 @@ const program_map = {
         {
             'id': flowchart_courses[26].id,
             'courseid': flowchart_courses[26].ccode,
-            //'coursename': flowchart_courses[26].coursename,
-
             'xcoord': 630,
             'ycoord': 640,
             'port': ['top']
@@ -342,8 +300,6 @@ for (var i = 0; i < program_map.nodes.length; i++) {
             program_map.nodes[i].grade = student_results[g].grade;
             program_map.nodes[i].mapid = student_results[g].mapid;
             program_map.nodes[i].title = student_results[g].coursename;
-            //program_map.nodes[i].studentname = student_results[g].student_name;
-            //program_map.nodes[i].studentnum = student_results[g].student_num;
             program_map.nodes[i].gid = student_results[g].gid;
             program_map.nodes[i].prof = student_results[g].prof;
             program_map.nodes[i].term = student_results[g].term;
@@ -419,9 +375,7 @@ var paper = new joint.dia.Paper({
             height: $('div#flowchart').height(),
             gridSize: 10,
             //drawGrid: true,
-            /*background: {
-                color: 'rgba(0, 255, 0, 0.3)'
-            }*/
+
 });
 
 
@@ -444,9 +398,6 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
     }, {
         tagName: 'image',
         selector: 'infoIcon'
-    }, {
-        tagName: 'text',
-        selector: 'testIcon'
     }],
 
     defaults: joint.util.defaultsDeep({
@@ -455,7 +406,7 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
         size: { width: 120, height: 110 },
         attrs: {
             'box': {
-                fill: '#28A745', stroke: '#28A745', width: 120, height: 110,
+                fill: '#9A9A9A', stroke: '#9A9A9A', width: 120, height: 110,
                 rx: 10,
                 ry: 10,
                 filter: {
@@ -468,14 +419,10 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
                 },
                 cursor: 'default'
             },
-            //'courseName': { 'cursor': 'default', 'font-size': 13.5, text: '', 'ref-x': .5, 'ref-y': 25, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
-            'courseCode': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 30, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
+            'courseCode': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 30, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#FAFAD2' },
             'grade': { 'cursor': 'default', 'font-size': 16, 'font-weight': 'bold', text: '', 'ref-x': .5, 'ref-y': 60, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#ffffff' },
-            /*'editGrade': { 'font-size': 16, 'font-weight': 'bold', text: 'Edit', 'ref-x': .6, 'ref-y': 120, ref: 'box', 'y-alignment': 'middle', 'x-alignment': 'middle', fill: '#00ccff',
-            event: 'element:edit', cursor: 'pointer'},*/
             'editIcon': { 'xlink:href': '', 'ref-x': .75, 'ref-y': 78, ref: 'box', width: 25, height: 28, cursor: 'default'},
-            'infoIcon': { 'xlink:href': '', 'ref-x': 5, 'ref-y': 76, ref: 'box', width: 30, height: 30, cursor: 'default'},
-            //'testIcon': {  'ref-x': 5, 'ref-y': 76, ref: 'box', 'font-family': 'FontAwesome', 'font-size': 15, 'class': 'fa fa-search icon'}
+            'infoIcon': { 'xlink:href': '', 'ref-x': 5, 'ref-y': 76, ref: 'box', width: 30, height: 30, cursor: 'default'}
         },
         // define port groups
     ports: {
@@ -485,7 +432,7 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
                     name: 'left'
                 },
                 attrs: {
-                    circle: { fill: '#3498DB', r: 0.5, magnet: true}
+                    circle: { fill: '#000000', r: 0.2, magnet: true}
                 }
             },
             'bottom': {
@@ -493,7 +440,7 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
                     name: 'bottom'
                 },
                 attrs: {
-                    circle: { fill: '#3498DB', r: 0.5, magnet: true}
+                    circle: { fill: '#000000', r: 0.2, magnet: true}
                 }
             },
             'right': {
@@ -501,7 +448,7 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
                     name: 'right'
                 },
                 attrs: {
-                    circle: { fill: '#3498DB', r: 0.5, magnet: true}
+                    circle: { fill: '#000000', r: 0.2, magnet: true}
                 }
             },
             'top': {
@@ -509,7 +456,7 @@ joint.shapes.basic.CourseBox = joint.shapes.basic.Generic.extend({
                     name: 'top'
                 },
                 attrs: {
-                    circle: { fill: '#3498DB', r:0.5, magnet: true}
+                    circle: { fill: '#000000', r:0.2, magnet: true}
                 }
             }
         }
@@ -533,18 +480,27 @@ for (i=0; i < courseList.length; i++) {
     size: { width: 120, height: 110 },
     id: courseList[i].id,
     attrs: {
-        //courseName: { text: joint.util.breakText(courseList[i].coursename, { width: 150 })},
         courseCode: { text: courseList[i].courseid},
-        //testIcon: { text: '\uf05a', fontFamily: 'FontAwesome'}
-        //infoIcon: { 'xlink:href':  '/static/info-icon.png'}
     }
 });
 
+    // if no grade, don't display
     if (courseList[i].grade === "" || courseList[i].grade == undefined) {
-        course .attr('grade/display', 'none');
+        course.attr('grade/display', 'none');
+        course.attr('courseCode/fill', '#ffffff');
     }
     else {
         course.attr('grade/text', 'Grade: '+ courseList[i].grade);
+
+        if (courseList[i].grade == "F " || courseList[i].grade == "F") {
+            course.attr('box/fill', '#4E825A');
+            course.attr('box/stroke', '#4E825A');
+        }
+        else {
+            course.attr('box/fill', '#28A745');
+            course.attr('box/stroke', '#28A745');
+        }
+
         course.attr('infoIcon/xlink:href', '/static/info-icon.png');
         course.attr('infoIcon/event', 'element:info');
         course.attr('infoIcon/cursor', 'pointer');
@@ -600,9 +556,8 @@ for (var l=0; l < prereqlinks.length; l++) {
 // prevent moving shapes
 paper.setInteractivity({elementMove: false});
 
-$('div#fcomment').hide();
 
-// paper event edit
+// paper event edit edit
 paper.on('element:edit', function(elementView, evt, x, y) {
         $('p#editGradeError').text('');
         var getGrade;
@@ -611,6 +566,8 @@ paper.on('element:edit', function(elementView, evt, x, y) {
         var getTitle;
         var getName;
         var getGid;
+        var getFcomment = "";
+        var getRcomment = "";
         var k;
         var j;
         for(k=0; k<courseList.length; k++){
@@ -622,6 +579,27 @@ paper.on('element:edit', function(elementView, evt, x, y) {
                 getName = courseList[k].studentname;
                 getNum = courseList[k].studentnum;
                 getGid = courseList[k].gid;
+
+                // show faculty comment if there is one, otherwise comment field is blank and editable
+                if (courseList[k].fcomment != "") {
+                    getFcomment = courseList[k].fcomment;
+                    $('input#editcourseFcomment').val(getFcomment);
+                }
+                else {
+                    getFcomment = "";
+                    $('input#editcourseFcomment').val(getFcomment);
+                }
+
+                // show review comment if there is one, otherwise comment field is blank and editable
+                if (courseList[k].rcomment != "") {
+                    getRcomment = courseList[k].rcomment;
+                    $('input#editcourseRcomment').val(getRcomment);
+                }
+                else {
+                    getRcomment = "";
+                    $('input#editcourseRcomment').val(getRcomment);
+                }
+
 
                 if (elementView.model.id === 12) {
                     console.log(getTitle);
@@ -647,8 +625,6 @@ paper.on('element:edit', function(elementView, evt, x, y) {
                 }
             }
         }
-        //alert('Edit grade: ' + getGrade + ' for course code '+ getCourse + ' ' + getMapid);
-        //$('#modal-launch').attr('data-target','#modalLoginForm');
 
 
         // edit modal
@@ -663,9 +639,14 @@ paper.on('element:edit', function(elementView, evt, x, y) {
     }
 );
 
+// hide div of faculty comment in info modal
+$('div#fcomment').hide();
+
+// hide div of review comment in info modal
+$('div#rcomment').hide();
 
 
-// paper event info
+// paper event info modal
 paper.on('element:info', function(elementView, evt, x, y) {
         var getGrade;
         var getCourseId;
@@ -676,7 +657,8 @@ paper.on('element:info', function(elementView, evt, x, y) {
         var getGid;
         var getProf;
         var getTerm;
-        var getFcomment = ""
+        var getFcomment = "";
+        var getRcomment = "";
         var k;
         var j;
         for(k=0; k<courseList.length; k++){
@@ -690,20 +672,30 @@ paper.on('element:info', function(elementView, evt, x, y) {
                 getGid = courseList[k].gid;
                 getProf= courseList[k].prof;
                 getTerm = courseList[k].term;
-                //getFcomment = courseList[k].fcomment;
 
-                /*if (courseList[k].fcomment != "") {
+                if (courseList[k].fcomment != "") {
                     $('div#fcomment').show();
                     getFcomment = courseList[k].fcomment;
                     $('input#infocourseFcomment').val(getFcomment);
                 }
                 else {
                     getFcomment = "";
-                }*/
+                    $('input#infocourseFcomment').val(getFcomment);
+                    $('div#fcomment').hide();
+                }
 
-              /*  if (getFcomment != "") {
-                    $('div#fcomment').show();
-                }*/
+
+                if (courseList[k].rcomment != "") {
+                    $('div#rcomment').show();
+                    getRcomment = courseList[k].rcomment;
+                    $('input#infocourseRcomment').val(getRcomment);
+                }
+                else {
+                    getRcomment = "";
+                    $('input#infocourseRcomment').val(getRcomment);
+                    $('div#rcomment').hide();
+                }
+
 
                 if (elementView.model.id === 12) {
                     console.log(getTitle);
@@ -742,14 +734,6 @@ paper.on('element:info', function(elementView, evt, x, y) {
         $('input#infocourseGrade').val(getGrade);
         $('input#infoGradeID').val(getGid);
 
-        /*$('div#fcomment').show();*/
-
-        //$('input#infocourseFcomment').val(getFcomment);
-
-        /*if (getFcomment != "") {
-            $('div#fcomment').show();
-            $('input#infocourseFcomment').val(getFcomment);
-        }*/
 
 
     }

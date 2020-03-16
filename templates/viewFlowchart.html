@@ -13,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <script type=text/javascript>
     var flowchart_courses = {{ flowchart_courses|tojson }}
@@ -46,6 +45,7 @@
             $('p#editGradeError').text('Invalid value');
             valid = false;
         }
+
         console.log(getGrade);
         return valid;
     }
@@ -62,7 +62,6 @@
     <div class="w-100 py-5 text-center">
     <h1>Student Program Progress</h1>
         <h2> {{ studentName }} <span style="font-size: 28px;color: darkgreen;"> [{{ studentNum }}]</span></h2>
-
 
     </div>
     <div class="container"  id="buttonPlace">
@@ -139,6 +138,14 @@
                 </div>
               </div>
 
+              <div class="form-group row" id="rcomment">
+                <label for="infocourseRcomment" class="col-sm-3 col-form-label">Review Comment</label>
+                <div class="col-sm-9">
+                  <input type="text" readonly class="form-control-plaintext" id="infocourseRcomment" value="">
+                    <input type="hidden" class="form-control" name="infogradeID" id="infoGradeID" value="" >
+                </div>
+              </div>
+
 
           </div>
           <div class="modal-footer">
@@ -189,10 +196,24 @@
                 </div>
               </div>
 
+              <div class="form-group row" id="editfcomment">
+                <label for="editcourseFcomment" class="col-sm-3 col-form-label">Faculty Comment</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="editcourseFcomment" name="editcourseFcomment" value="">
+                </div>
+              </div>
+
+              <div class="form-group row" id="editrcomment">
+                <label for="editcourseRcomment" class="col-sm-3 col-form-label">Review Comment</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="editcourseRcomment" name="editcourseRcomment" value="">
+                </div>
+              </div>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
-            <input type="submit" class="btn btn-success" value="Save Grade">
+            <input type="submit" class="btn btn-success" value="Save">
           </div>
             </form>
         </div>
