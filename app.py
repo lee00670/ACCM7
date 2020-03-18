@@ -1,18 +1,17 @@
 import os
 import re
-
 import MySQLdb.cursors
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
-
 import inputCSV
 
 app = Flask(__name__)
 Bootstrap(app)
 
+# indicate the folder when loading the input files
 UPLOAD_FOLDER = 'd:/1.MyDoc/2020W/CST8268_Project/project/ACCM7/Upload/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -23,17 +22,17 @@ app.secret_key = 'your secret key'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_DB'] = 'accm'
+
+# configuration file for db password, mailing setting
 app.config.from_pyfile('./static/config.cfg')
 
-# app.config['MAIL_SERVER'] = "localhost"
-# app.config['MAIL_PORT'] = 8025
-# python -m smtpd -n -c DebuggingServer localhost:8025 ==> for emulated email server
-
-#mgail setting
+# gmail setting to send notification for registration
 app.config['MAIL_SERVER'] = "smtp.googlemail.com"
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = 1
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+# gmail account to notify a new user's registration (sender, receipient)
+emailAccount = '';
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -49,18 +48,10 @@ def login():
         username = request.form['username']
         passwordUser = request.form['password']
         category = request.form['category']
-
         msg=category
+
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        # if(category=='professor'):
-        #     cursor.execute('SELECT * FROM professor WHERE id = %s AND pw = %s', (username, password))
-        # elif (category=='coordinator'):
-        #     cursor.execute('SELECT * FROM coordinator WHERE id = %s AND pw = %s', (username, password))
-        # elif (category=='secretary'):
-        #     cursor.execute('SELECT * FROM secretary WHERE id = %s AND pw = %s', (username, password))
-        # elif (category=='student'):
-        #     cursor.execute('SELECT student_num as id, pw FROM student WHERE student_num = %s AND pw = %s', (username, password))
         result = 0
         if (category == 'professor'):
             result = cursor.execute('SELECT * FROM professor WHERE id = %s',[username])
@@ -71,6 +62,7 @@ def login():
         elif (category == 'student'):
             result = cursor.execute('SELECT student_num as id, pw, sid FROM student WHERE student_num = %s', [username])
 
+        # hide the upgrade button for professor's or student's session
         bUpload ={0: 'hidden', 1: ''} [(category == 'coordinator')|(category == 'secretary')]
 
         if result > 0:
@@ -78,6 +70,7 @@ def login():
             account = cursor.fetchone()
             password = account['pw']
 
+            #encrypt the password using SHA256
             if sha256_crypt.verify(passwordUser, password):
                 # Create session data, we can access this data in other routes
                 session['loggedin'] = True
@@ -127,9 +120,9 @@ def register():
         username = request.form['username']
         password = request.form['password']
         password = sha256_crypt.hash(password)
-
         email = request.form['email']
         category = request.form['category']
+
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         if (category == 'professor'):
@@ -143,6 +136,7 @@ def register():
 
         account = cursor.fetchone()
         cursor.close()
+
         # If account exists show error and validation checks
         if account:
             msg = 'Account already exists!'
@@ -153,13 +147,12 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
-
+            # If the account is appropiate, then send email to account manager to register a new user
+            # Enable below to send notification email after setting the emailAccount and gmail account/password in config.cfg
             # mail = Mail(app)
-            # msg = Message('New request for the registration of ACCM', sender="jelee1003@gmail.com", recipients=['jelee1003@gmail.com'])
-            # # msg = Message('test subject', sender='algonquinlive.com\lee00670', recipients=['jelee1003@gmail.com'])
+            # msg = Message('New request for the registration of ACCM', sender=emailAccount, recipients=[emailAccount])
             # msg.html="<h3>The new resistration is requested as below.</h3>username: "+username+"<br>password: "+password+"<br>email: "+email+"<br>Category: "+category
             # mail.send(msg)
-
             msg = ''
             success = "s"
             return render_template('register.html', msg=msg, success=success)
@@ -203,15 +196,16 @@ def profile():
 
             #if password is right, show the profile info
             if(sha256_crypt.verify(request.form['password'], session['pw'])):
-            # if(session['pw'] == request.form['password']):
                 return render_template('profile.html', account=account, category=session['category'], msg="s")
             else:
                 return render_template('profile.html', account=account, category=session['category'], msg="The password is wrong.")
+
         # if user requests to change password
         elif request.method == 'POST' and 'newPassword' in request.form and 'newPassword2' in request.form:
             if(request.form['newPassword'] == request.form['newPassword2']):
                 try:
                     category = session['category']
+
                     #make hash using new password user inputs
                     pw = sha256_crypt.hash(request.form['newPassword'])
 
@@ -255,11 +249,9 @@ def uploadGrade():
 # http://localhost:5000/uploadGrade2DB
 @app.route('/uploadGrade2DB', methods=['POST'])
 def uploadGrade2DB():
-    print("call uploadGrade2DB")
-
-    # if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form and 'sLevel' in request.form:
+    # print("call uploadGrade2DB")
     if request.method == 'POST' and 'pVersion' in request.form and 'cTerm' in request.form:
-        print("call inputCSV2DB")
+        # print("call inputCSV2DB")
         file = request.files['inputFile']
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
 
@@ -267,35 +259,39 @@ def uploadGrade2DB():
         inputCSV.inputCSV2DB(request.form['pVersion'], request.form['cTerm'], "", file.filename)
 
     if 'loggedin' in session:
-        # User is loggedin show them the home page
-        print("call uploadGrade below")
+        # User is loggedin show them the uploadGrade page
+        # print("call uploadGrade below")
         return render_template('uploadGrade.html', show=1, fileName=file.filename)
 
-        # User is not loggedin redirect to login page
+    # User is not loggedin redirect to login page
     return redirect(url_for('login'))
-
 
 # http://localhost:5000/viewGrade
 @app.route('/viewGrade', methods=['GET','POST'])
 def viewGrade():
     if(session['category'] == 'student'):
+        #if user logged in as student, then show the grade flowchart of the student
         return viewFlowchart(str(session['sid']), '','','','')
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # cursor.execute('SELECT * FROM user WHERE id = %s', [session['username']])
+    # get the program version
     cursor.execute('select distinct program_version  from program;')
     versionDict = cursor.fetchall()
+    # get the program list
     cursor.execute('SELECT program_version, pid, name FROM program ')
     programDict = cursor.fetchall()
+    # get the levels
     cursor.execute('select distinct level, pid from coursemap order by level')
     lvlDict = cursor.fetchall()
+    # get the course list
     cursor.execute('select pid, coursemap.cid, title, level from coursemap inner join course using(cid) order by title;')
     courseDict = cursor.fetchall()
 
     if request.method == 'POST' and 'program' in request.form and 'level' in request.form and 'version' in request.form:
+        # update the grade or comments for a student
         if 'gid' in request.form and request.form['gid']:
-            print(request.form['m_grade'])
-            print(request.form['gid'])
+            # print(request.form['m_grade'])
+            # print(request.form['gid'])
             setQuery =''
             if 'm_grade' in request.form and request.form['gid']:
                 setQuery = "letter_grade = '" + request.form['m_grade']+"', fcomment = '" + request.form['m_fcomment']+"', rcomment = '" + request.form['m_rcomment']+"'"
@@ -303,17 +299,20 @@ def viewGrade():
             query = "UPDATE grade SET "+setQuery+" WHERE gid='"+ request.form['gid']+"'"
             cursor.execute(query)
             mysql.connection.commit()
+        #insert new item for student information
         elif 'gid' in request.form and request.form['m_grade']:
             valuesQuery= "values('" + request.form['sid']+"', '" + request.form['mapid']+"', '" + request.form['m_grade']+"', '" + request.form['m_fcomment']+"', '" + request.form['m_rcomment']+"')"
             query = "INSERT INTO grade(sid, mapid, letter_grade, fcomment, rcomment) " + valuesQuery
             cursor.execute(query)
             mysql.connection.commit()
 
+        #delete grade
         if 'delete_gid' in request.form and request.form['delete_gid']:
             query = "delete from grade where gid ='"+request.form['delete_gid']+"'"
             cursor.execute(query)
             mysql.connection.commit()
 
+        #show the grade book for the specific program version, program, level or course
         if 'course' in request.form and request.form['course'] and request.form['course'] != 'null':
             query = "select c.course_num, c.title, coursemap.level, coursemap.mapid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' and c.cid='"+request.form['course'] +"' group by c.course_num order by course_num"
         else:
@@ -363,6 +362,7 @@ def viewGrade():
             edit='disabled'
         else:
             edit = ''
+
         #call viewGrade.html with result
         if(len(rDict)):
             return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict,
@@ -370,11 +370,8 @@ def viewGrade():
         else:
             return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict,
                                    values=request.form, noData=True)
-
-
+    #show the viewGrade for GET method
     return render_template('viewGrade.html', vDict=versionDict, pDict=programDict, lvlDict=lvlDict, cDict=courseDict, values=request.form)
-
-
 
 
 # http://localhost:5000/viewFlowchart
@@ -384,13 +381,7 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
     # print("call viewFlowchart", sid, sVersion, sProgram, sLevel, sCourse)
     # print("call viewFlowchart", session['category'])
 
-    # get coordinator and secretary session
-    if session['category'] is 'coordinator' or 'secretary':
-        admin_session = True
-    else:
-        admin_session = False
-
-
+    #this is to refresh flowchart.js
     revision = session['revision']
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -490,8 +481,6 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
             seen.add(t)
             prereq_links.append(duplicates)
 
-
-
     # get student courses
     cursor.execute(
             "select distinct flowchart.sequence, concat(professor.fname, ' ' , professor.lname) as 'Professor Name', course.course_num, course.title, " +
@@ -525,6 +514,7 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
     r = revision
     bBackKey = not (session['category'] == 'student')
     bEditGrade = (session['category'] == 'coordinator' or session['category'] == 'secretary')
+    admin_session = bEditGrade
     v = {'version': sVersion, 'program': sProgram, 'level':sLevel, 'course': sCourse}
 
     return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,

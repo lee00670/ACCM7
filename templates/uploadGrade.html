@@ -29,35 +29,9 @@
             console.log("afterLoading!");
         }
 
-        {#$("#uploadGrade").click( function () {#}
-        {#    console.log($('#uploadForm')[0].checkValidity());#}
-        {#    if($('#uploadForm')[0].checkValidity())#}
-        {#    {#}
-        {#        $('#loading').show();#}
-        {#        $('#uploadForm :input').prop('disabled', true);#}
-        {#        console.log("call uploadGrade2DB");#}
-        {##}
-        {#        $.post('{{ url_for('uploadGrade2DB') }}', {pVersion: $("#pVersion").val(), cTerm: $("#cTerm").val(), sLevel: $("#sLevel").val()} );#}
-                {#$.ajax({#}
-                    {#url: {{ url_for('uploadGrade2DB') }},#}
-                {#    url: window.location.origin+"/uploadGrade2DB",#}
-                {#    method: "POST",#}
-                {#    data: {pVersion: $("#pVersion").val(), cTerm: $("#cTerm").val(), sLevel: $("#sLevel").val()},#}
-                {#    success: afterLoading()#}
-                {##}
-        {#    }#}
-
     });
     </script>
-{#    <style>#}
-{#    #loading#}
-{#    {#}
-{#        position: absolute;#}
-{#        left: 50%;#}
-{#        top: 50%;#}
-{#        z-index: 1;#}
-{#    }#}
-{#    </style>#}
+
 {% endblock %}
 
 {% block content %}
@@ -99,19 +73,7 @@
                   Please provide a valid course term.
                 </div>
               </div>
-{#              <div class="col-md-4 mb-3">#}
-{#                <label for="sLevel">Student Level</label>#}
-{#                <select class="custom-select d-block w-100" id="sLevel" name="sLevel" required="">#}
-{#                    <option value="">Choose...</option>#}
-{#                    <option>1</option>#}
-{#                    <option>2</option>#}
-{#                    <option>3</option>#}
-{#                    <option>4</option>#}
-{#                </select>#}
-{#                <div class="invalid-feedback">#}
-{#                  Please provide a valid course term.#}
-{#                </div>#}
-{#              </div>#}
+
             </div>
 
 
@@ -134,10 +96,6 @@
         </form>
       </div>
     </div>
-
-{#    <div id="loading" style="display: none;">#}
-{#      <img id="loading-image" src="static/ajax-loader.gif" alt="Loading..." />#}
-{#    </div>#}
 
 <script>
     document.querySelector('.custom-file-input').addEventListener('change',function(e){

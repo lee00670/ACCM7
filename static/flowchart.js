@@ -493,8 +493,8 @@ for (i=0; i < courseList.length; i++) {
         course.attr('grade/text', 'Grade: '+ courseList[i].grade);
 
         if (courseList[i].grade == "F " || courseList[i].grade == "F") {
-            course.attr('box/fill', '#4E825A');
-            course.attr('box/stroke', '#4E825A');
+            course.attr('box/fill', '#176629');
+            course.attr('box/stroke', '#176629');
         }
         else {
             course.attr('box/fill', '#28A745');
