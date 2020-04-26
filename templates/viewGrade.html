@@ -362,7 +362,12 @@
               <th scope="col" rowspan="2">Name</th>
 {#              <th scope="col" rowspan="2">Level</th>#}
                 {% for c in clist %}
-                <th class="h-100" scope="col" data-toggle="tooltip" data-placement="right" data-title='{{c['title'] }}'><p class="vertical-text align-bottom ">{{ c['course_num'] }}</p></th>
+                    {% if c['mandatory'] %}
+                        <th class="h-100" scope="col" data-toggle="tooltip" data-placement="right" style="color: red" data-title='{{c['title'] }}'><p class="vertical-text align-bottom ">{{ c['course_num'] }}</p></th>
+                    {% else %}
+                        <th class="h-100" scope="col" data-toggle="tooltip" data-placement="right" data-title='{{c['title'] }}'><p class="vertical-text align-bottom ">{{ c['course_num'] }}</p></th>
+                    {% endif %}
+
                 {% endfor %}
             </tr>
           <tr>

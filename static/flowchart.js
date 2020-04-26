@@ -1,5 +1,161 @@
 
 const program_map = {
+    // 'nodes':[
+    //     // level 1
+    //     {
+    //         'id': flowchart_courses[0].id,
+    //         'courseid': flowchart_courses[0].ccode,
+    //         'xcoord': 90,
+    //         'ycoord': 10,
+    //         'port': ['left', 'bottom', 'right']
+    //     },
+    //     {
+    //         'id': flowchart_courses[2].id,
+    //         'courseid': flowchart_courses[2].ccode,
+    //         'xcoord': 270,
+    //         'ycoord': 10,
+    //         'port': ['left', 'bottom']
+    //     },
+    //     {
+    //         'id': flowchart_courses[4].id,
+    //         'courseid': flowchart_courses[4].ccode,
+    //         'xcoord': 450,
+    //         'ycoord': 10,
+    //         'port': ['bottom']
+    //     },
+    //     {
+    //         'id': flowchart_courses[6].id,
+    //         'courseid': flowchart_courses[6].ccode,
+    //         'xcoord': 630,
+    //         'ycoord': 10,
+    //         'port': []
+    //     },
+    //     {
+    //         'id': flowchart_courses[8].id,
+    //         'courseid': flowchart_courses[8].ccode,
+    //         'xcoord': 810,
+    //         'ycoord': 10,
+    //         'port': []
+    //     },
+    //     {
+    //         'id': flowchart_courses[10].id,
+    //         'courseid': flowchart_courses[10].ccode,
+    //         'xcoord': 990,
+    //         'ycoord': 10,
+    //         'port': []
+    //     },
+    //
+    //     // level 2
+    //     {
+    //         'id': flowchart_courses[12].id,
+    //         'courseid': flowchart_courses[12].ccode,
+    //         'xcoord': 90,
+    //         'ycoord': 220,
+    //         'port': ['top']
+    //     },
+    //     {
+    //         'id': flowchart_courses[14].id,
+    //         'courseid': flowchart_courses[14].ccode,
+    //         'xcoord': 270,
+    //         'ycoord': 220,
+    //         'port': ['top', 'bottom']
+    //     },
+    //     {
+    //         'id': flowchart_courses[15].id,
+    //         'courseid': flowchart_courses[15].ccode,
+    //         'xcoord': 450,
+    //         'ycoord': 220,
+    //         'port': []
+    //     },
+    //     {
+    //         'id': flowchart_courses[16].id,
+    //         'courseid': flowchart_courses[16].ccode,
+    //         'xcoord': 630,
+    //         'ycoord': 220,
+    //         'port': []
+    //     },
+    //     {
+    //         'id': flowchart_courses[17].id,
+    //         'courseid': flowchart_courses[17].ccode,
+    //         'xcoord': 810,
+    //         'ycoord': 220,
+    //         'port': ['bottom']
+    //     },
+    //     {
+    //         'id': 12,
+    //         'courseid': 'GED3002',
+    //         'xcoord': 990,
+    //         'ycoord': 220,
+    //         'port': []
+    //     },
+    //
+    //     // level 3
+    //     {
+    //         'id': flowchart_courses[18].id,
+    //         'courseid': flowchart_courses[18].ccode,
+    //         'xcoord': 90,
+    //         'ycoord': 430,
+    //         'port': ['left', 'top']
+    //     },
+    //     {
+    //         'id': flowchart_courses[19].id,
+    //         'courseid': flowchart_courses[19].ccode,
+    //         'xcoord': 270,
+    //         'ycoord': 430,
+    //         'port': ['left', 'bottom']
+    //     },
+    //     {
+    //         'id': flowchart_courses[20].id,
+    //         'courseid': flowchart_courses[20].ccode,
+    //         'xcoord': 450,
+    //         'ycoord': 430,
+    //         'port': ['top', 'right']
+    //     },
+    //     {
+    //         'id': flowchart_courses[22].id,
+    //         'courseid': flowchart_courses[22].ccode,
+    //         'xcoord': 810,
+    //         'ycoord': 430,
+    //         'port': ['top']
+    //     },
+    //     {
+    //         'id': 17,
+    //         'courseid': 'GED3002',
+    //         'xcoord': 990,
+    //         'ycoord': 430,
+    //         'port': []
+    //     },
+    //
+    //     // level 4
+    //     {
+    //         'id': flowchart_courses[23].id,
+    //         'courseid': flowchart_courses[23].ccode,
+    //         'xcoord': 90,
+    //         'ycoord': 640,
+    //         'port': ['top']
+    //     },
+    //     {
+    //         'id': flowchart_courses[24].id,
+    //         'courseid': flowchart_courses[24].ccode,
+    //         'xcoord': 270,
+    //         'ycoord': 640,
+    //         'port': ['top']
+    //     },
+    //     {
+    //         'id': flowchart_courses[25].id,
+    //         'courseid': flowchart_courses[25].ccode,
+    //         'xcoord': 450,
+    //         'ycoord': 640,
+    //         'port': ['top']
+    //     },
+    //     {
+    //         'id': flowchart_courses[26].id,
+    //         'courseid': flowchart_courses[26].ccode,
+    //         'xcoord': 630,
+    //         'ycoord': 640,
+    //         'port': ['top']
+    //     },
+    // ],
     'nodes':[
         // level 1
         {
@@ -10,36 +166,36 @@ const program_map = {
             'port': ['left', 'bottom', 'right']
         },
         {
-            'id': flowchart_courses[2].id,
-            'courseid': flowchart_courses[2].ccode,
+            'id': flowchart_courses[1].id,
+            'courseid': flowchart_courses[1].ccode,
             'xcoord': 270,
             'ycoord': 10,
             'port': ['left', 'bottom']
         },
         {
-            'id': flowchart_courses[4].id,
-            'courseid': flowchart_courses[4].ccode,
+            'id': flowchart_courses[2].id,
+            'courseid': flowchart_courses[2].ccode,
             'xcoord': 450,
             'ycoord': 10,
             'port': ['bottom']
         },
         {
-            'id': flowchart_courses[6].id,
-            'courseid': flowchart_courses[6].ccode,
+            'id': flowchart_courses[3].id,
+            'courseid': flowchart_courses[3].ccode,
             'xcoord': 630,
             'ycoord': 10,
             'port': []
         },
         {
-            'id': flowchart_courses[8].id,
-            'courseid': flowchart_courses[8].ccode,
+            'id': flowchart_courses[4].id,
+            'courseid': flowchart_courses[4].ccode,
             'xcoord': 810,
             'ycoord': 10,
             'port': []
         },
         {
-            'id': flowchart_courses[10].id,
-            'courseid': flowchart_courses[10].ccode,
+            'id': flowchart_courses[5].id,
+            'courseid': flowchart_courses[5].ccode,
             'xcoord': 990,
             'ycoord': 10,
             'port': []
@@ -47,36 +203,36 @@ const program_map = {
 
         // level 2
         {
-            'id': flowchart_courses[12].id,
-            'courseid': flowchart_courses[12].ccode,
+            'id': flowchart_courses[6].id,
+            'courseid': flowchart_courses[6].ccode,
             'xcoord': 90,
             'ycoord': 220,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[14].id,
-            'courseid': flowchart_courses[14].ccode,
+            'id': flowchart_courses[7].id,
+            'courseid': flowchart_courses[7].ccode,
             'xcoord': 270,
             'ycoord': 220,
             'port': ['top', 'bottom']
         },
         {
-            'id': flowchart_courses[15].id,
-            'courseid': flowchart_courses[15].ccode,
+            'id': flowchart_courses[8].id,
+            'courseid': flowchart_courses[8].ccode,
             'xcoord': 450,
             'ycoord': 220,
             'port': []
         },
         {
-            'id': flowchart_courses[16].id,
-            'courseid': flowchart_courses[16].ccode,
+            'id': flowchart_courses[9].id,
+            'courseid': flowchart_courses[9].ccode,
             'xcoord': 630,
             'ycoord': 220,
             'port': []
         },
         {
-            'id': flowchart_courses[17].id,
-            'courseid': flowchart_courses[17].ccode,
+            'id': flowchart_courses[10].id,
+            'courseid': flowchart_courses[10].ccode,
             'xcoord': 810,
             'ycoord': 220,
             'port': ['bottom']
@@ -91,29 +247,29 @@ const program_map = {
 
         // level 3
         {
-            'id': flowchart_courses[18].id,
-            'courseid': flowchart_courses[18].ccode,
+            'id': flowchart_courses[11].id,
+            'courseid': flowchart_courses[11].ccode,
             'xcoord': 90,
             'ycoord': 430,
             'port': ['left', 'top']
         },
         {
-            'id': flowchart_courses[19].id,
-            'courseid': flowchart_courses[19].ccode,
+            'id': flowchart_courses[12].id,
+            'courseid': flowchart_courses[12].ccode,
             'xcoord': 270,
             'ycoord': 430,
             'port': ['left', 'bottom']
         },
         {
-            'id': flowchart_courses[20].id,
-            'courseid': flowchart_courses[20].ccode,
+            'id': flowchart_courses[13].id,
+            'courseid': flowchart_courses[13].ccode,
             'xcoord': 450,
             'ycoord': 430,
             'port': ['top', 'right']
         },
         {
-            'id': flowchart_courses[22].id,
-            'courseid': flowchart_courses[22].ccode,
+            'id': flowchart_courses[14].id,
+            'courseid': flowchart_courses[14].ccode,
             'xcoord': 810,
             'ycoord': 430,
             'port': ['top']
@@ -128,29 +284,29 @@ const program_map = {
 
         // level 4
         {
-            'id': flowchart_courses[23].id,
-            'courseid': flowchart_courses[23].ccode,
+            'id': flowchart_courses[15].id,
+            'courseid': flowchart_courses[15].ccode,
             'xcoord': 90,
             'ycoord': 640,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[24].id,
-            'courseid': flowchart_courses[24].ccode,
+            'id': flowchart_courses[16].id,
+            'courseid': flowchart_courses[16].ccode,
             'xcoord': 270,
             'ycoord': 640,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[25].id,
-            'courseid': flowchart_courses[25].ccode,
+            'id': flowchart_courses[17].id,
+            'courseid': flowchart_courses[17].ccode,
             'xcoord': 450,
             'ycoord': 640,
             'port': ['top']
         },
         {
-            'id': flowchart_courses[26].id,
-            'courseid': flowchart_courses[26].ccode,
+            'id': flowchart_courses[18].id,
+            'courseid': flowchart_courses[18].ccode,
             'xcoord': 630,
             'ycoord': 640,
             'port': ['top']
@@ -161,11 +317,11 @@ const program_map = {
         {
             'source': {
                 'id': prerequisite_links[4].source_id,
-                'port': 'bottom'
+                'port': 'left'
             },
             'target': {
                 'id': prerequisite_links[4].target_id,
-                'port': 'top'
+                'port': 'left'
             }
         },
         {
@@ -221,11 +377,11 @@ const program_map = {
         {
             'source': {
                 'id': prerequisite_links[3].source_id,
-                'port': 'left'
+                'port': 'bottom'
             },
             'target': {
                 'id': prerequisite_links[3].target_id,
-                'port': 'left'
+                'port': 'top'
             }
         },
         {

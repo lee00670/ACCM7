@@ -9,11 +9,25 @@ def inputCSV2DB(pVersion, cTerm, sLevel, fileName):
    cursor = mydb.cursor()
    csv_data = csv.reader(open('./Upload/'+fileName, encoding='UTF-8-sig'))
    for row in csv_data:
-      print(row)
+      print("row ", row)
+      if(row == []):
+          continue;
       insertQuery = "INSERT INTO ac_grade_input(program_version, course_year, student_level, "+\
                     "term, program_code, program_name, course_level, student_num, student_fname, student_lname, student_email, prof_fname, prof_lname, course_num, course_title, "+\
-                    "letter_grade, percent, fcomment, rcomment) VALUES('"+pVersion+"', '"+cTerm+"', '"+sLevel+"',"
-      cursor.execute(insertQuery+"%s, %s, %s, %s, %s, %s, %s, '', %s, %s, %s, %s, %s, %s, %s, %s)", row)
+                    "letter_grade, percent, fcomment, rcomment) VALUES('"+pVersion+"', '"+cTerm+"', '"+sLevel+"', "
+
+      #print(insertQuery+"%s, %s, %s, %s, %s, %s, %s, '', %s, %s, %s, %s, %s, %s, %s, %s)", row)
+      #cursor.execute(insertQuery+"%s, %s, %s, %s, %s, %s, %s, '', %s, %s, %s, %s, %s, %s, %s, %s)", row)
+      print(
+          insertQuery + "'" + row[0] + "', '" + row[1] + "', '" + row[2] + "', '" + row[3] + "', '" + row[4] + "', '" +
+          row[5] + "', '" + row[6] + "', '" + "', '" + row[7] + "', '" + row[8] + "', '" + row[9] + "', '" + row[
+              10] + "', '" + row[11].strip() + "', '" + row[12].replace(" ", "") + "', '" + row[13] + "', '" + row[
+              14] + "')")
+      cursor.execute(
+          insertQuery + "'" + row[0] + "', '" + row[1] + "', '" + row[2] + "', '" + row[3] + "', '" + row[4] + "', '" +
+          row[5] + "', '" + row[6] + "', '" + "', '" + row[7] + "', '" + row[8] + "', '" + row[9] + "', \"" + row[
+              10] + "\", '" + row[11].strip() + "', '" + row[12].replace(" ", "") + "', '" + row[13] + "', '" + row[
+              14] + "')")
 
    print("insert program")
    #insert program

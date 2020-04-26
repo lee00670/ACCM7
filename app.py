@@ -322,8 +322,22 @@ def viewGrade():
         #get the course list as program, version and level
         clist = cursor.fetchall()
 
+        mandatoryCourses = ['CST8260', 'CST8209', 'CST8279', 'MAD9013', 'MAT8001C', 'CST8300', 'CST8250', 'CST8253',
+                            'CST8254', 'MAD9010', 'ENL1813T', 'CST8256', 'CST8257', 'CST8258', 'ENL8720', 'CST8259',
+                            'CST8265', 'CST8325', 'CST8268']
+        for c1 in clist:
+            if(c1['course_num'] in mandatoryCourses):
+                print(c1)
+                c1['mandatory']= 1
+            else:
+                c1['mandatory']= 0
+
+
         #get all the grade for every students with program, version and level
-        query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' order by s.student_num, title"
+        #query ="select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = "+request.form['program'] +" and p.program_version='"+request.form['version'] +"' and coursemap.level='"+request.form['level'] +"' order by s.student_num, title"
+        query = "select p.name, p.program_version, gid, student_num, sid, concat(s.fname, ' ' , s.lname) as fullname, s.level, fcomment,rcomment,  c.course_num, c.title, letter_grade, coursemap.level, p.pid, c.cid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = " + \
+                request.form['program'] + " and p.program_version='" + request.form[
+                    'version'] + "' and coursemap.level='" + request.form['level'] + "' order by s.lname, s.fname, s.student_num"
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
@@ -378,7 +392,7 @@ def viewGrade():
 
 @app.route('/viewFlowchart/<string:sid>/<string:sVersion>/<string:sProgram>/<string:sLevel>/<string:sCourse>', methods=['GET','POST'])
 def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
-    # print("call viewFlowchart", sid, sVersion, sProgram, sLevel, sCourse)
+    print("call viewFlowchart", sid, sVersion, sProgram, sLevel, sCourse)
     # print("call viewFlowchart", session['category'])
 
     #this is to refresh flowchart.js
@@ -419,13 +433,25 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
     flowchart = cursor.fetchall()
 
     # flowchart layout list
+    flowchart_courses_temp = []
     flowchart_courses = []
 
     mainc = []
+    prev = 0;
     for c in flowchart:
-        flowchart_courses.append({'id': c['sequence'], 'mapid': c['mapid'], 'ccode': c['course_num'], 'title': c['title']})
-        mainc.append(c['course_num'])
+        if(prev != c['sequence']):
+            flowchart_courses.append(
+                {'id': c['sequence'], 'mapid': c['mapid'], 'ccode': c['course_num'], 'title': c['title']})
+            mainc.append(c['course_num'])
+            prev = c['sequence']
 
+
+    # mainc = []
+    # i = 1
+    # for c in flowchart:
+    #     flowchart_courses.append(
+    #             {'id': c['sequence'], 'mapid': c['mapid'], 'ccode': c['course_num'], 'title': c['title']})
+    #     mainc.append(c['course_num'])
 
 
     # get courses that have a prerequisite
@@ -448,6 +474,7 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
             pre_courses.append(
                 {'sequence': c['sequence'], 'ccode': c['course_num'], 'title': c['title'], 'c_mapid': c['mapid'],
                  'c_prereq': c['prerequisite']})
+
 
     # get courses that are prerequisites
     items_c = []
@@ -515,9 +542,50 @@ def viewFlowchart(sid, sVersion, sProgram, sLevel, sCourse):
     bBackKey = not (session['category'] == 'student')
     bEditGrade = (session['category'] == 'coordinator' or session['category'] == 'secretary')
     admin_session = bEditGrade
-    v = {'version': sVersion, 'program': sProgram, 'level':sLevel, 'course': sCourse}
 
-    return render_template('viewFlowchart.html', flowchart_courses=flowchart_courses, prerequisite_links=prereq_links, sid = sid,
+
+
+    query = "select distinct sid from grade as g inner join student as s using(sid) inner join coursemap using(mapid) inner join program as p using(pid) inner join course as c using(cid) where p.pid = " + \
+            sProgram + " and p.program_version='" + sVersion + "' and coursemap.level='" + sLevel + "' order by s.lname, s.fname, s.student_num"
+    cursor.execute(query)
+    resultSIDList = cursor.fetchall()
+    cursor.close()
+
+    found = 0
+    idx = resultSIDList.index({'sid': int(sid)})
+    prevSID = resultSIDList[idx-1]
+
+    length = len(resultSIDList)
+    if(idx == len(resultSIDList)-1):
+        nextSID = resultSIDList[0]
+    else:
+        idx = idx +1
+        nextSID = resultSIDList[idx]
+
+    v = {'version': sVersion, 'program': sProgram, 'level':sLevel, 'course': sCourse, 'nextSID': str(nextSID['sid']), 'prevSID':str(prevSID['sid'])}
+
+    #id: sequence, ccode: course number
+    iawd_course_map = [{'id': 1, 'ccode': 'CST8260'},{'id': 2, 'ccode': 'CST8209'},{'id': 3, 'ccode': 'CST8279'},
+                       {'id': 4, 'ccode': 'MAD9013'},{'id': 5, 'ccode': 'MAT8001C'},{'id': 6, 'ccode': 'CST8300'},
+                       {'id': 7, 'ccode': 'CST8250'},{'id': 8, 'ccode': 'CST8253'},{'id': 9, 'ccode': 'CST8254'},
+                       {'id': 10, 'ccode': 'MAD9010'},{'id': 11, 'ccode': 'ENL1813T'},{'id': 13, 'ccode': 'CST8256'},
+                       {'id': 14, 'ccode': 'CST8257'},{'id': 15, 'ccode': 'CST8258'},{'id': 16, 'ccode': 'ENL8720'},
+                       {'id': 18, 'ccode': 'CST8259'},{'id': 19, 'ccode': 'CST8265'},{'id': 20, 'ccode': 'CST8267'},
+                       {'id': 21, 'ccode': 'CST8268'}]
+    prereq_links = [{'source_id': 1, 'source': 'CST8260', 'target_id': 7, 'target': 'CST8250'},
+                        {'source_id': 2, 'source': 'CST8209', 'target_id': 8, 'target': 'CST8253'},
+                        {'source_id': 3, 'source': 'CST8279', 'target_id': 8, 'target': 'CST8253'},
+                        {'source_id': 8, 'source': 'CST8253', 'target_id': 13, 'target': 'CST8256'},
+                        {'source_id': 1, 'source': 'CST8260', 'target_id': 13, 'target': 'CST8256'},
+                        {'source_id': 1, 'source': 'CST8260', 'target_id': 14, 'target': 'CST8257'},
+                        {'source_id': 2, 'source': 'CST8209', 'target_id': 14, 'target': 'CST8257'},
+                        {'source_id': 8, 'source': 'CST8253', 'target_id': 15, 'target': 'CST8258'},
+                        {'source_id': 11, 'source': 'ENL1813T', 'target_id': 16, 'target': 'ENL8720'},
+                        {'source_id': 14, 'source': 'CST8257', 'target_id': 18, 'target': 'CST8259'},
+                        {'source_id': 14, 'source': 'CST8257', 'target_id': 19, 'target': 'CST8265'},
+                        {'source_id': 14, 'source': 'CST8257', 'target_id': 20, 'target': 'CST8267'},
+                        {'source_id': 15, 'source': 'CST8258', 'target_id': 21, 'target': 'CST8268'}]
+
+    return render_template('viewFlowchart.html', flowchart_courses=iawd_course_map, prerequisite_links=prereq_links, sid = sid,
                            student_results = student_grades, studentName = student_name, studentNum = student_num, values=request.form,
                            bBackKey=bBackKey, random=r, admin_session = admin_session, v=v, bEditGrade=bEditGrade)
-
