@@ -24,10 +24,10 @@ def inputCSV2DB(pVersion, cTerm, sLevel, fileName):
               10] + "', '" + row[11].strip() + "', '" + row[12].replace(" ", "") + "', '" + row[13] + "', '" + row[
               14] + "')")
       cursor.execute(
-          insertQuery + "'" + row[0] + "', '" + row[1] + "', '" + row[2] + "', '" + row[3] + "', '" + row[4] + "', '" +
-          row[5] + "', '" + row[6] + "', '" + "', '" + row[7] + "', '" + row[8] + "', '" + row[9] + "', \"" + row[
-              10] + "\", '" + row[11].strip() + "', '" + row[12].replace(" ", "") + "', '" + row[13] + "', '" + row[
-              14] + "')")
+          insertQuery + "'" + row[0].strip() + "', '" + row[1].strip() + "', '" + row[2].strip() + "', '" + row[3].strip() + "', '" + row[4].strip() + "', '" +
+          row[5].strip() + "', '" + row[6].strip() + "', '" + "', '" + row[7].strip() + "', '" + row[8].strip() + "', '" + row[9].strip() + "', \"" + row[
+              10].strip() + "\", '" + row[11].strip() + "', '" + row[12].replace(" ", "") + "', '" + row[13].strip() + "', '" + row[
+              14].strip() + "')")
 
    print("insert program")
    #insert program
